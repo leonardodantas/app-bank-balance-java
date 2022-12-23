@@ -6,7 +6,7 @@ services:
     environment:
       DATABASE_HOST: "127.0.0.1"
       POSTGRES_USER: "leonardo"
-      POSTGRES_DB: "leonardo"
+      POSTGRES_DB: "bankBalance"
       POSTGRES_PASSWORD: "123456"
     ports:
       - "5432:5432"
