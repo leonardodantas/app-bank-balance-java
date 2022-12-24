@@ -14,6 +14,6 @@ public class BalanceEntry {
     private String description;
     private BigDecimal value;
     private LocalDateTime date;
-    private TransactionType TransactionType;
+    private TransactionType transactionType;
 
 }
