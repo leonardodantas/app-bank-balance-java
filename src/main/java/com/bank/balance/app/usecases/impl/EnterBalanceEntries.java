@@ -1,6 +1,7 @@
 package com.bank.balance.app.usecases.impl;
 
 import com.bank.balance.app.exceptions.TransactionIdFoundException;
+import com.bank.balance.app.repositories.ITransactionRepository;
 import com.bank.balance.app.usecases.IEnterBalanceEntries;
 import com.bank.balance.domain.UserBalanceEntries;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,12 @@ import java.util.stream.Collectors;
 @Service
 public class EnterBalanceEntries implements IEnterBalanceEntries {
 
+    private final ITransactionRepository transactionRepository;
+
+    public EnterBalanceEntries(final ITransactionRepository transactionRepository) {
+        this.transactionRepository = transactionRepository;
+    }
+
     /**
      * VERIFICAR SE EXISTEM TRANSAÇÕES REPETIDAS
      * VERIFICAR SE AS TRANSAÇÕES SÃO NOVAS (NÃO PERMITIR TRANSAÇÕES REPETIDAS)
@@ -25,6 +32,10 @@ public class EnterBalanceEntries implements IEnterBalanceEntries {
     @Override
     public UserBalanceEntries execute(final UserBalanceEntries userBalanceEntries) {
         log.info("Initialized execute user balance entries");
+
+        /**
+         * VERIFICANDO SE EXISTEM ALGUM TRANSAÇÃO REPETIDA NA LISTA
+         */
         final var nonRepeatTransactionsId = userBalanceEntries.getNonRepeatTransactionsId();
         final var transactionsId = userBalanceEntries.getTransactionsId();
         final var transactionsIdFounds = new ArrayList<String>();
@@ -39,6 +50,13 @@ public class EnterBalanceEntries implements IEnterBalanceEntries {
 
             throw new TransactionIdFoundException(transactionsIdFounds);
         }
+
+        /**
+         * VERIFICAR SE ALGUMA TRANSAÇÃO JÁ EXISTE NO BANCO DE DADOS
+         */
+        final var existingTransactions = transactionRepository.findByTransactionId(transactionsId);
+
+
         return null;
     }
 
