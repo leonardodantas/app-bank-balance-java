@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface ITransactionRepository {
 
-    List<Transaction> findByTransactionId(final List<String> transactionId);
+    List<Transaction> findByTransactionsId(final List<String> transactionsId);
 }

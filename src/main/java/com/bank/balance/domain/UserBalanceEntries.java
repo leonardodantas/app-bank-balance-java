@@ -3,7 +3,7 @@ package com.bank.balance.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +27,25 @@ public class UserBalanceEntries {
         return balanceEntries.stream().map(BalanceEntry::getTransactionId).collect(Collectors.toUnmodifiableList());
     }
 
-    public List<String> getNonRepeatTransactionsId() {
+    private List<String> getNonRepeatTransactionsId() {
         return getBalanceEntries().stream().map(BalanceEntry::getTransactionId).distinct().collect(Collectors.toList());
+    }
+
+    public boolean isTransactionsRepeat() {
+        return this.getNonRepeatTransactionsId().size() != this.getTransactionsId().size();
+    }
+
+    public BigDecimal getBalance() {
+        final var balanceToAdd = this.getBalanceEntries().stream()
+                .filter(balanceEntry -> balanceEntry.getTransactionType().equals(TransactionType.DEPOSIT))
+                .map(BalanceEntry::getValue)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        final var balanceForWithdrawal = this.getBalanceEntries().stream()
+                .filter(balanceEntry -> balanceEntry.getTransactionType().equals(TransactionType.WITHDRAW))
+                .map(BalanceEntry::getValue)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return balanceToAdd.add(balanceForWithdrawal);
     }
 }

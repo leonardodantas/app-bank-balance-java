@@ -20,8 +20,8 @@ public class TransactionRepository implements ITransactionRepository {
 
     @Override
     @Cacheable("transactions")
-    public List<Transaction> findByTransactionId(final List<String> transactionId) {
-        log.info("Search findByTransactionId {}", transactionId);
-        return transactionJpaRepository.findAllById(transactionId);
+    public List<Transaction> findByTransactionsId(final List<String> transactionsId) {
+        log.info("Search findByTransactionId {}", transactionsId);
+        return transactionJpaRepository.findAllById(transactionsId);
     }
 }

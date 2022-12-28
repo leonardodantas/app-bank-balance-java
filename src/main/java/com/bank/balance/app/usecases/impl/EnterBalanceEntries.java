@@ -4,12 +4,13 @@ import com.bank.balance.app.exceptions.ExistingTransactionsException;
 import com.bank.balance.app.exceptions.TransactionIdFoundException;
 import com.bank.balance.app.repositories.ITransactionRepository;
 import com.bank.balance.app.usecases.*;
-import com.bank.balance.domain.*;
+import com.bank.balance.app.utils.RepeatTransactionsUtil;
+import com.bank.balance.domain.CustomerBalance;
+import com.bank.balance.domain.Transaction;
+import com.bank.balance.domain.UserBalanceEntries;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,62 +32,16 @@ public class EnterBalanceEntries implements IEnterBalanceEntries {
         this.saveUserBalanceEntries = saveUserBalanceEntries;
     }
 
-    /**
-     * VERIFICAR SE EXISTEM TRANSAÇÕES REPETIDAS
-     * VERIFICAR SE AS TRANSAÇÕES SÃO NOVAS (NÃO PERMITIR TRANSAÇÕES REPETIDAS)
-     * ATUALIZAR SALDO DO USUARIO
-     *
-     * @param userBalanceEntries
-     * @return
-     */
     @Override
     public UserBalanceEntries execute(final UserBalanceEntries userBalanceEntries) {
         log.info("Initialized execute user balance entries");
+        checkIfAnyNewTransactionsAlreadyExistInTheDatabaseAndSaveTheNewTransactions(userBalanceEntries);
+        updateUserBalance(userBalanceEntries);
+        return saveUserBalanceEntries.execute(userBalanceEntries);
+    }
 
-        /**
-         * VERIFICANDO SE EXISTEM ALGUM TRANSAÇÃO REPETIDA NA LISTA
-         */
-        final var nonRepeatTransactionsId = userBalanceEntries.getNonRepeatTransactionsId();
-        final var transactionsId = userBalanceEntries.getTransactionsId();
-        final var transactionsIdFounds = new ArrayList<String>();
-
-        if (nonRepeatTransactionsId.size() != transactionsId.size()) {
-            final var transactionsIdSorted = transactionsId.stream().sorted().collect(Collectors.toUnmodifiableList());
-
-            transactionsIdSorted.forEach(transactionId -> {
-                transactionsIdSorted.stream().filter(transactionIdSorted -> transactionIdSorted.equalsIgnoreCase(transactionId)).findFirst()
-                        .ifPresent(transactionsIdFounds::add);
-            });
-
-            throw new TransactionIdFoundException(transactionsIdFounds);
-        }
-
-        /**
-         * VERIFICAR SE ALGUMA TRANSAÇÃO JÁ EXISTE NO BANCO DE DADOS
-         */
-        final var existingTransactions = transactionRepository.findByTransactionId(transactionsId);
-
-        if (!existingTransactions.isEmpty()) {
-            throw new ExistingTransactionsException(existingTransactions.stream().map(Transaction::getTransactionId).collect(Collectors.toUnmodifiableList()));
-        }
-
-        final var customerTransactions = userBalanceEntries.getBalanceEntries().stream().map(Transaction::from).collect(Collectors.toUnmodifiableList());
-        saveTransactions.execute(customerTransactions);
-
-        /**
-         * Verificar qual valor vai ser adicionado ao saldo do usuario
-         */
-        final var balanceToAdd = userBalanceEntries.getBalanceEntries().stream()
-                .filter(balanceEntry -> balanceEntry.getTransactionType().equals(TransactionType.DEPOSIT))
-                .map(BalanceEntry::getValue)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        final var balanceForWithdrawal = userBalanceEntries.getBalanceEntries().stream()
-                .filter(balanceEntry -> balanceEntry.getTransactionType().equals(TransactionType.WITHDRAW))
-                .map(BalanceEntry::getValue)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        final var balance = balanceToAdd.add(balanceForWithdrawal);
+    private void updateUserBalance(final UserBalanceEntries userBalanceEntries) {
+        final var balance = userBalanceEntries.getBalance();
 
         findCustomerBalance.execute(userBalanceEntries.getCustomerId())
                 .ifPresentOrElse((customerBalance) -> {
@@ -97,12 +52,30 @@ public class EnterBalanceEntries implements IEnterBalanceEntries {
                     final var customerBalanceToSave = CustomerBalance.of(userBalanceEntries.getCustomerId(), balance);
                     saveCustomerBalance.execute(customerBalanceToSave);
                 });
+    }
 
-        /**
-         * Adicionar lançamentos na tabela temporaria por noventa dias
-         */
+    private void checkIfAnyNewTransactionsAlreadyExistInTheDatabaseAndSaveTheNewTransactions(final UserBalanceEntries userBalanceEntries) {
+        final var transactionsId = checkingIfThereAreRepeatedTransactionsInTheList(userBalanceEntries);
 
-        return saveUserBalanceEntries.execute(userBalanceEntries);
+        final var existingTransactions = transactionRepository.findByTransactionsId(transactionsId);
+
+        if (!existingTransactions.isEmpty()) {
+            throw new ExistingTransactionsException(existingTransactions.stream().map(Transaction::getTransactionId).collect(Collectors.toUnmodifiableList()));
+        }
+
+        final var customerTransactions = userBalanceEntries.getBalanceEntries().stream().map(Transaction::from).collect(Collectors.toUnmodifiableList());
+        saveTransactions.execute(customerTransactions);
+    }
+
+    private List<String> checkingIfThereAreRepeatedTransactionsInTheList(final UserBalanceEntries userBalanceEntries) {
+        final var transactionsId = userBalanceEntries.getTransactionsId();
+
+        if (userBalanceEntries.isTransactionsRepeat()) {
+            final var repeatTransactionsId = RepeatTransactionsUtil.getRepeatTransactionsId(transactionsId);
+            throw new TransactionIdFoundException(repeatTransactionsId);
+        }
+
+        return transactionsId;
     }
 
     /**
