@@ -7,4 +7,6 @@ import java.util.List;
 public interface ITransactionRepository {
 
     List<Transaction> findByTransactionsId(final List<String> transactionsId);
+
+    void saveAll(final List<Transaction> transactions);
 }

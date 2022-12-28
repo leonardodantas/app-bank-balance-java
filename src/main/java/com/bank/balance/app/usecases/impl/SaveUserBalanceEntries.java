@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SaveUserBalanceEntries implements ISaveUserBalanceEntries {
 
+
     @Override
     public UserBalanceEntries execute(final UserBalanceEntries userBalanceEntries) {
         return null;

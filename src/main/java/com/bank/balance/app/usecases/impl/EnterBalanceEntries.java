@@ -78,17 +78,15 @@ public class EnterBalanceEntries implements IEnterBalanceEntries {
         return transactionsId;
     }
 
-    /**
-     * VERIFICAR SE EXISTEM TRANSAÇÕES REPETIDAS
-     * VERIFICAR SE AS TRANSAÇÕES SÃO NOVAS (NÃO PERMITIR TRANSAÇÕES REPETIDAS)
-     * ATUALIZAR SALDO DO USUARIO
-     *
-     * @param userBalanceEntries
-     * @return
-     */
     @Override
     public List<UserBalanceEntries> execute(final List<UserBalanceEntries> userBalanceEntries) {
         log.info("Initialized execute list of user balance entries");
-        return null;
+
+        userBalanceEntries.forEach(this::checkIfAnyNewTransactionsAlreadyExistInTheDatabaseAndSaveTheNewTransactions);
+        userBalanceEntries.forEach(this::updateUserBalance);
+        return userBalanceEntries
+                .stream()
+                .map(saveUserBalanceEntries::execute)
+                .collect(Collectors.toUnmodifiableList());
     }
 }

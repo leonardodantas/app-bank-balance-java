@@ -17,4 +17,8 @@ public class Transaction implements Serializable {
     public static Transaction from(final BalanceEntry balanceEntry) {
         return new Transaction(balanceEntry.getTransactionId(), balanceEntry.getDate());
     }
+
+    public static Transaction of(final String transactionId, final LocalDateTime date) {
+        return new Transaction(transactionId, date);
+    }
 }
