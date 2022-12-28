@@ -1,6 +1,6 @@
 package com.bank.balance.infra.http.converters;
 
-import com.bank.balance.domain.UserBalanceEntries;
+import com.bank.balance.domain.UserBalanceEntry;
 import com.bank.balance.infra.exceptions.ConvertFileException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class UserBalanceEntriesConverter implements Converter<MultipartFile, List<UserBalanceEntries>> {
+public class UserBalanceEntriesConverter implements Converter<MultipartFile, List<UserBalanceEntry>> {
 
     private final ObjectMapper objectMapper;
 
@@ -23,7 +23,7 @@ public class UserBalanceEntriesConverter implements Converter<MultipartFile, Lis
     }
 
     @Override
-    public List<UserBalanceEntries> convert(final MultipartFile file) {
+    public List<UserBalanceEntry> convert(final MultipartFile file) {
         try {
             final var json = new String(file.getBytes());
             return objectMapper.readValue(json, new TypeReference<>() {

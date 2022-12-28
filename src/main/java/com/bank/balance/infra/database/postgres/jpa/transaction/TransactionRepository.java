@@ -2,6 +2,7 @@ package com.bank.balance.infra.database.postgres.jpa.transaction;
 
 import com.bank.balance.app.repositories.ITransactionRepository;
 import com.bank.balance.domain.Transaction;
+import com.bank.balance.infra.database.postgres.converters.TransactionEntityToTransaction;
 import com.bank.balance.infra.database.postgres.entities.TransactionEntity;
 import com.bank.balance.infra.exceptions.SaveEntityException;
 import lombok.extern.slf4j.Slf4j;
@@ -17,17 +18,19 @@ import java.util.stream.Collectors;
 public class TransactionRepository implements ITransactionRepository {
 
     private final TransactionJpaRepository transactionJpaRepository;
+    private final TransactionEntityToTransaction transactionEntityToTransaction;
 
-    public TransactionRepository(final TransactionJpaRepository transactionJpaRepository) {
+    public TransactionRepository(final TransactionJpaRepository transactionJpaRepository, final TransactionEntityToTransaction transactionEntityToTransaction) {
         this.transactionJpaRepository = transactionJpaRepository;
+        this.transactionEntityToTransaction = transactionEntityToTransaction;
     }
 
     @Override
     @Cacheable("transactions")
     public List<Transaction> findByTransactionsId(final List<String> transactionsId) {
         log.info("Search findByTransactionId {}", transactionsId);
-        transactionJpaRepository.findAllById(transactionsId);
-        return null;
+        final var transactionsEntity = transactionJpaRepository.findAllById(transactionsId);
+        return transactionsEntity.stream().map(transactionEntityToTransaction::convert).collect(Collectors.toUnmodifiableList());
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.bank.balance.infra.http.jsons.responses;
 
-import com.bank.balance.domain.UserBalanceEntries;
+import com.bank.balance.domain.UserBalanceEntry;
 import lombok.Getter;
 
 import java.util.List;
@@ -17,8 +17,8 @@ public class UserBalanceEntriesResponse {
         this.balanceEntries = balanceEntries;
     }
 
-    public static UserBalanceEntriesResponse from(final UserBalanceEntries userBalanceEntries) {
-        final var balanceEntriesResponses = userBalanceEntries.getBalanceEntries().stream().map(BalanceEntryResponse::from).collect(Collectors.toUnmodifiableList());
-        return new UserBalanceEntriesResponse(userBalanceEntries.getCustomerId(), balanceEntriesResponses);
+    public static UserBalanceEntriesResponse from(final UserBalanceEntry userBalanceEntry) {
+        final var balanceEntriesResponses = userBalanceEntry.getBalanceEntries().stream().map(BalanceEntryResponse::from).collect(Collectors.toUnmodifiableList());
+        return new UserBalanceEntriesResponse(userBalanceEntry.getCustomerId(), balanceEntriesResponses);
     }
 }

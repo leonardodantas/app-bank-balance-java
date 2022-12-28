@@ -9,18 +9,18 @@ import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
-public class UserBalanceEntries {
+public class UserBalanceEntry {
 
     private String customerId;
     private List<BalanceEntry> balanceEntries;
 
-    private UserBalanceEntries(final String customerId, final List<BalanceEntry> balanceEntries) {
+    private UserBalanceEntry(final String customerId, final List<BalanceEntry> balanceEntries) {
         this.customerId = customerId;
         this.balanceEntries = balanceEntries;
     }
 
-    public static UserBalanceEntries of(final String customerId, final List<BalanceEntry> balanceEntries) {
-        return new UserBalanceEntries(customerId, balanceEntries);
+    public static UserBalanceEntry of(final String customerId, final List<BalanceEntry> balanceEntries) {
+        return new UserBalanceEntry(customerId, balanceEntries);
     }
 
     public List<String> getTransactionsId() {
@@ -47,5 +47,10 @@ public class UserBalanceEntries {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         return balanceToAdd.add(balanceForWithdrawal);
+    }
+
+    public List<Transaction> getTransactions() {
+        return this.getBalanceEntries()
+                .stream().map(Transaction::from).collect(Collectors.toUnmodifiableList());
     }
 }

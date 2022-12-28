@@ -1,7 +1,7 @@
 package com.bank.balance.infra.http.converters;
 
 import com.bank.balance.domain.BalanceEntry;
-import com.bank.balance.domain.UserBalanceEntries;
+import com.bank.balance.domain.UserBalanceEntry;
 import com.bank.balance.infra.exceptions.ConvertFileException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,10 +23,10 @@ public class UserBalanceEntryConverter {
         this.objectMapper = objectMapper;
     }
 
-    public Converter<MultipartFile, UserBalanceEntries> toDomain(final String customerId) {
+    public Converter<MultipartFile, UserBalanceEntry> toDomain(final String customerId) {
         return (file) -> {
             final var balanceEntries = getBalanceEntries(file);
-            return UserBalanceEntries.of(customerId, balanceEntries);
+            return UserBalanceEntry.of(customerId, balanceEntries);
         };
     }
 
