@@ -6,4 +6,6 @@ import java.util.Optional;
 
 public interface ICustomerBalanceRepository {
     Optional<CustomerBalance> findById(final String customerId);
+
+    CustomerBalance save(final CustomerBalance customerBalance);
 }

@@ -18,4 +18,8 @@ public class CustomerBalance {
     public static CustomerBalance of(final String customerId, final BigDecimal balance) {
         return new CustomerBalance(customerId, balance, LocalDateTime.now());
     }
+
+    public static CustomerBalance of(final String customerId, final BigDecimal balance, final LocalDateTime lastUpdate) {
+        return new CustomerBalance(customerId, balance, lastUpdate);
+    }
 }
