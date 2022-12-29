@@ -8,23 +8,25 @@ import com.bank.balance.infra.exceptions.SaveEntityException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
 public class CustomerBalanceRepository implements ICustomerBalanceRepository {
 
-    private final CustomerBalanceJpaRepository customerBalanceRepository;
+    private final CustomerBalanceJpaRepository customerBalanceJpaRepository;
     private final CustomerBalanceEntityToCustomerBalance customerBalanceEntityToCustomerBalance;
 
-    public CustomerBalanceRepository(final CustomerBalanceJpaRepository customerBalanceRepository, final CustomerBalanceEntityToCustomerBalance customerBalanceEntityToCustomerBalance) {
-        this.customerBalanceRepository = customerBalanceRepository;
+    public CustomerBalanceRepository(final CustomerBalanceJpaRepository customerBalanceJpaRepository, final CustomerBalanceEntityToCustomerBalance customerBalanceEntityToCustomerBalance) {
+        this.customerBalanceJpaRepository = customerBalanceJpaRepository;
         this.customerBalanceEntityToCustomerBalance = customerBalanceEntityToCustomerBalance;
     }
 
     @Override
     public Optional<CustomerBalance> findById(final String customerId) {
-        return customerBalanceRepository.findById(customerId)
+        return customerBalanceJpaRepository.findById(customerId)
                 .map(customerBalanceExist -> {
                     final var customerBalance = customerBalanceEntityToCustomerBalance.convert(customerBalanceExist);
                     return Optional.ofNullable(customerBalance);
@@ -35,12 +37,18 @@ public class CustomerBalanceRepository implements ICustomerBalanceRepository {
     public CustomerBalance save(final CustomerBalance customerBalance) {
         try {
             final var customerEntity = CustomerBalanceEntity.from(customerBalance);
-            final var customerEntitySave = customerBalanceRepository.save(customerEntity);
+            final var customerEntitySave = customerBalanceJpaRepository.save(customerEntity);
             return customerBalanceEntityToCustomerBalance.convert(customerEntitySave);
         } catch (final Exception e) {
             log.error("Error save customerEntity: {}", e.getMessage());
             throw new SaveEntityException(e.getMessage());
         }
 
+    }
+
+    @Override
+    public List<CustomerBalance> findAllById(final List<String> customersIds) {
+        final var customerBalanceEntity = customerBalanceJpaRepository.findAllById(customersIds);
+        return customerBalanceEntity.stream().map(customerBalanceEntityToCustomerBalance::convert).collect(Collectors.toUnmodifiableList());
     }
 }

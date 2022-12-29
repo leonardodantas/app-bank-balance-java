@@ -2,9 +2,13 @@ package com.bank.balance.app.usecases.impl;
 
 import com.bank.balance.app.exceptions.ExistingTransactionsException;
 import com.bank.balance.app.exceptions.TransactionIdFoundException;
+import com.bank.balance.app.repositories.ICustomerBalanceRepository;
 import com.bank.balance.app.repositories.ITransactionRepository;
 import com.bank.balance.app.repositories.IUserBalanceEntryRepository;
-import com.bank.balance.app.usecases.*;
+import com.bank.balance.app.usecases.IEnterBalanceEntries;
+import com.bank.balance.app.usecases.IFindCustomerBalance;
+import com.bank.balance.app.usecases.ISaveCustomerBalance;
+import com.bank.balance.app.usecases.ISaveTransactions;
 import com.bank.balance.app.utils.RepeatTransactionsUtil;
 import com.bank.balance.domain.CustomerBalance;
 import com.bank.balance.domain.Transaction;
@@ -23,16 +27,16 @@ public class EnterBalanceEntries implements IEnterBalanceEntries {
     private final IFindCustomerBalance findCustomerBalance;
     private final ISaveCustomerBalance saveCustomerBalance;
     private final ISaveTransactions saveTransactions;
-    private final ISaveUserBalanceEntries saveUserBalanceEntries;
     private final IUserBalanceEntryRepository balanceEntryRepository;
+    private final ICustomerBalanceRepository customerBalanceRepository;
 
-    public EnterBalanceEntries(final ITransactionRepository transactionRepository, final IFindCustomerBalance findCustomerBalance, final ISaveCustomerBalance saveCustomerBalance, final ISaveTransactions saveTransactions, final ISaveUserBalanceEntries saveUserBalanceEntries, final IUserBalanceEntryRepository balanceEntryRepository) {
+    public EnterBalanceEntries(final ITransactionRepository transactionRepository, final IFindCustomerBalance findCustomerBalance, final ISaveCustomerBalance saveCustomerBalance, final ISaveTransactions saveTransactions, final IUserBalanceEntryRepository balanceEntryRepository, ICustomerBalanceRepository customerBalanceRepository) {
         this.transactionRepository = transactionRepository;
         this.findCustomerBalance = findCustomerBalance;
         this.saveCustomerBalance = saveCustomerBalance;
         this.saveTransactions = saveTransactions;
-        this.saveUserBalanceEntries = saveUserBalanceEntries;
         this.balanceEntryRepository = balanceEntryRepository;
+        this.customerBalanceRepository = customerBalanceRepository;
     }
 
     @Override
@@ -42,6 +46,17 @@ public class EnterBalanceEntries implements IEnterBalanceEntries {
         updateUserBalance(userBalanceEntry);
         return balanceEntryRepository.save(userBalanceEntry);
     }
+
+    @Override
+    public List<UserBalanceEntry> execute(final List<UserBalanceEntry> userBalanceEntries) {
+        log.info("Initialized execute list of user balance entries");
+
+        userBalanceEntries.forEach(this::checkIfAnyNewTransactionsAlreadyExistInTheDatabaseAndSaveTheNewTransactions);
+        userBalanceEntries.forEach(this::updateUserBalance);
+
+        return balanceEntryRepository.save(userBalanceEntries);
+    }
+
 
     private void updateUserBalance(final UserBalanceEntry userBalanceEntry) {
         final var balance = userBalanceEntry.getBalance();
@@ -81,15 +96,4 @@ public class EnterBalanceEntries implements IEnterBalanceEntries {
         return transactionsId;
     }
 
-    @Override
-    public List<UserBalanceEntry> execute(final List<UserBalanceEntry> userBalanceEntries) {
-        log.info("Initialized execute list of user balance entries");
-
-        userBalanceEntries.forEach(this::checkIfAnyNewTransactionsAlreadyExistInTheDatabaseAndSaveTheNewTransactions);
-        userBalanceEntries.forEach(this::updateUserBalance);
-        return userBalanceEntries
-                .stream()
-                .map(saveUserBalanceEntries::execute)
-                .collect(Collectors.toUnmodifiableList());
-    }
 }
