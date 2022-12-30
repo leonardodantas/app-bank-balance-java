@@ -8,13 +8,10 @@ import com.bank.balance.app.usecases.IEnterBalanceEntries;
 import com.bank.balance.app.utils.RepeatTransactionsUtil;
 import com.bank.balance.domain.CustomerBalance;
 import com.bank.balance.domain.Transaction;
-import com.bank.balance.domain.UserBalanceEntry;
 import com.bank.balance.domain.UsersBalancesEntriesAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -39,24 +36,23 @@ public class EnterBalanceEntries implements IEnterBalanceEntries {
     }
 
     private void updateUsersBalances(final UsersBalancesEntriesAdapter userBalanceEntries) {
-        // TODO: 30/12/2022 se nunca foi salvo na primeira vez, como vai ser atualizado?
         final var customersIds = userBalanceEntries.getCustomersIds();
         final var customersBalance = customerBalanceRepository.findAllById(customersIds);
 
-        final var customersBalanceToUpdate = new ArrayList<CustomerBalance>();
+        final var customersBalancesToSave = new ArrayList<CustomerBalance>();
 
-        customersBalance.forEach(customerBalance -> {
-            final var allBalances = userBalanceEntries
-                    .getUserBalanceEntries()
-                    .stream()
-                    .filter(userBalanceEntry -> userBalanceEntry.getCustomerId().equalsIgnoreCase(customerBalance.getCustomerId()))
-                    .collect(Collectors.toUnmodifiableList());
+        userBalanceEntries
+                .getUserBalanceEntries()
+                .forEach(userBalanceEntry -> {
+                    final var customerBalanceToSave = customersBalance
+                            .stream()
+                            .filter(customerBalance -> customerBalance.getCustomerId().equalsIgnoreCase(userBalanceEntry.getCustomerId()))
+                            .findFirst()
+                            .orElse(CustomerBalance.of(userBalanceEntry.getCustomerId(), userBalanceEntry.getBalance()));
+                    customersBalancesToSave.add(customerBalanceToSave);
+                });
 
-            final var balance = allBalances.stream().map(UserBalanceEntry::getBalance).reduce(BigDecimal.ZERO, BigDecimal::add);
-            customersBalanceToUpdate.add(CustomerBalance.of(customerBalance.getCustomerId(), customerBalance.getBalance().add(balance), LocalDateTime.now()));
-        });
-
-        customerBalanceRepository.save(customersBalanceToUpdate);
+        customerBalanceRepository.save(customersBalancesToSave);
     }
 
     private void verifyDatabaseTransactions(final UsersBalancesEntriesAdapter userBalanceEntries) {
