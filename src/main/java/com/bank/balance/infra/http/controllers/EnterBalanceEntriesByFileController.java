@@ -1,7 +1,6 @@
 package com.bank.balance.infra.http.controllers;
 
 import com.bank.balance.app.usecases.IEnterBalanceEntries;
-import com.bank.balance.app.usecases.IEnterBalanceEntry;
 import com.bank.balance.domain.UsersBalancesEntriesAdapter;
 import com.bank.balance.infra.http.converters.UserBalanceEntriesConverter;
 import com.bank.balance.infra.http.converters.UserBalanceEntryConverter;
@@ -21,13 +20,11 @@ public class EnterBalanceEntriesByFileController {
 
     private final UserBalanceEntryConverter userBalanceEntryConverter;
     private final UserBalanceEntriesConverter userBalanceEntriesConverter;
-    private final IEnterBalanceEntry enterBalanceEntry;
     private final IEnterBalanceEntries enterBalanceEntries;
 
-    public EnterBalanceEntriesByFileController(final UserBalanceEntryConverter userBalanceEntryConverter, final UserBalanceEntriesConverter userBalanceEntriesConverter, final IEnterBalanceEntry enterBalanceEntry, final IEnterBalanceEntries enterBalanceEntries) {
+    public EnterBalanceEntriesByFileController(final UserBalanceEntryConverter userBalanceEntryConverter, final UserBalanceEntriesConverter userBalanceEntriesConverter, final IEnterBalanceEntries enterBalanceEntries) {
         this.userBalanceEntryConverter = userBalanceEntryConverter;
         this.userBalanceEntriesConverter = userBalanceEntriesConverter;
-        this.enterBalanceEntry = enterBalanceEntry;
         this.enterBalanceEntries = enterBalanceEntries;
     }
 

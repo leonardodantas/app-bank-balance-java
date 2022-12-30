@@ -15,6 +15,9 @@
 	<description>Application for Bank Balance</description>
 	<properties>
 		<java.version>11</java.version>
+
+		<spock-core>1.3-groovy-2.4</spock-core>
+		<spock-spring>1.3-groovy-2.4</spock-spring>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -77,10 +80,37 @@
 <!--			<artifactId>json-simple</artifactId>-->
 <!--			<version>1.1.1</version>-->
 <!--		</dependency>-->
+
+		<dependency>
+			<groupId>org.spockframework</groupId>
+			<artifactId>spock-core</artifactId>
+			<version>${spock-core}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.spockframework</groupId>
+			<artifactId>spock-spring</artifactId>
+			<version>${spock-spring}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.codehaus.gmavenplus</groupId>
+				<artifactId>gmavenplus-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>testCompile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
