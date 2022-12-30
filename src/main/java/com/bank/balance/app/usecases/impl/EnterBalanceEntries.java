@@ -39,6 +39,7 @@ public class EnterBalanceEntries implements IEnterBalanceEntries {
     }
 
     private void updateUsersBalances(final UsersBalancesEntriesAdapter userBalanceEntries) {
+        // TODO: 30/12/2022 se nunca foi salvo na primeira vez, como vai ser atualizado?
         final var customersIds = userBalanceEntries.getCustomersIds();
         final var customersBalance = customerBalanceRepository.findAllById(customersIds);
 
