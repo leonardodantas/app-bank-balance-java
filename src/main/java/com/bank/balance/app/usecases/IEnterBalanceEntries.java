@@ -1,8 +1,8 @@
 package com.bank.balance.app.usecases;
 
-import com.bank.balance.domain.UsersBalancesEntries;
+import com.bank.balance.domain.UsersBalancesEntriesAdapter;
 
 public interface IEnterBalanceEntries {
 
-    UsersBalancesEntries execute(final UsersBalancesEntries userBalanceEntries);
+    UsersBalancesEntriesAdapter execute(final UsersBalancesEntriesAdapter userBalanceEntries);
 }

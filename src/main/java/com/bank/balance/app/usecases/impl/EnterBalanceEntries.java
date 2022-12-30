@@ -9,7 +9,7 @@ import com.bank.balance.app.utils.RepeatTransactionsUtil;
 import com.bank.balance.domain.CustomerBalance;
 import com.bank.balance.domain.Transaction;
 import com.bank.balance.domain.UserBalanceEntry;
-import com.bank.balance.domain.UsersBalancesEntries;
+import com.bank.balance.domain.UsersBalancesEntriesAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -31,14 +31,14 @@ public class EnterBalanceEntries implements IEnterBalanceEntries {
     }
 
     @Override
-    public UsersBalancesEntries execute(final UsersBalancesEntries userBalanceEntries) {
+    public UsersBalancesEntriesAdapter execute(final UsersBalancesEntriesAdapter userBalanceEntries) {
         verifyRepeatTransactions(userBalanceEntries);
         verifyDatabaseTransactions(userBalanceEntries);
         updateUsersBalances(userBalanceEntries);
         return userBalanceEntries;
     }
 
-    private void updateUsersBalances(final UsersBalancesEntries userBalanceEntries) {
+    private void updateUsersBalances(final UsersBalancesEntriesAdapter userBalanceEntries) {
         final var customersIds = userBalanceEntries.getCustomersIds();
         final var customersBalance = customerBalanceRepository.findAllById(customersIds);
 
@@ -58,7 +58,7 @@ public class EnterBalanceEntries implements IEnterBalanceEntries {
         customerBalanceRepository.save(customersBalanceToUpdate);
     }
 
-    private void verifyDatabaseTransactions(final UsersBalancesEntries userBalanceEntries) {
+    private void verifyDatabaseTransactions(final UsersBalancesEntriesAdapter userBalanceEntries) {
         final var transactionsId = userBalanceEntries.getTransactionsIds();
 
         final var existingTransactions = transactionRepository.findByTransactionsId(transactionsId);
@@ -71,7 +71,7 @@ public class EnterBalanceEntries implements IEnterBalanceEntries {
         transactionRepository.saveAll(customerTransactions);
     }
 
-    private void verifyRepeatTransactions(final UsersBalancesEntries userBalanceEntries) {
+    private void verifyRepeatTransactions(final UsersBalancesEntriesAdapter userBalanceEntries) {
         if (userBalanceEntries.isRepeated()) {
             final var transactionsId = userBalanceEntries.getTransactionsIds();
             final var repeatTransactionsId = RepeatTransactionsUtil.getRepeatTransactionsId(transactionsId);

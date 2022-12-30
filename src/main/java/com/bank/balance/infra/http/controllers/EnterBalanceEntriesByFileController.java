@@ -2,6 +2,7 @@ package com.bank.balance.infra.http.controllers;
 
 import com.bank.balance.app.usecases.IEnterBalanceEntries;
 import com.bank.balance.app.usecases.IEnterBalanceEntry;
+import com.bank.balance.domain.UsersBalancesEntriesAdapter;
 import com.bank.balance.infra.http.converters.UserBalanceEntriesConverter;
 import com.bank.balance.infra.http.converters.UserBalanceEntryConverter;
 import com.bank.balance.infra.http.jsons.responses.UserBalanceEntriesResponse;
@@ -34,8 +35,8 @@ public class EnterBalanceEntriesByFileController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserBalanceEntriesResponse execute(@RequestParam("file") @RequestPart final MultipartFile request, @PathVariable final String customerId) {
         final var userBalanceEntries = userBalanceEntryConverter.toDomain(customerId).convert(request);
-        final var response = enterBalanceEntry.execute(userBalanceEntries);
-        return UserBalanceEntriesResponse.from(response);
+        final var response = enterBalanceEntries.execute(UsersBalancesEntriesAdapter.from(userBalanceEntries));
+        return UserBalanceEntriesResponse.from(response.getOne());
     }
 
     @PostMapping("all")
