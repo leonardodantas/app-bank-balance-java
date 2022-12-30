@@ -6,10 +6,10 @@ import com.bank.balance.app.repositories.ICustomerBalanceRepository;
 import com.bank.balance.app.repositories.ITransactionRepository;
 import com.bank.balance.app.usecases.IEnterBalanceEntries;
 import com.bank.balance.app.utils.RepeatTransactionsUtil;
-import com.bank.balance.domain.BalanceEntry;
 import com.bank.balance.domain.CustomerBalance;
 import com.bank.balance.domain.Transaction;
 import com.bank.balance.domain.UserBalanceEntry;
+import com.bank.balance.domain.UsersBalancesEntries;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -26,27 +26,28 @@ public class EnterBalanceEntries implements IEnterBalanceEntries {
     private final ITransactionRepository transactionRepository;
     private final ICustomerBalanceRepository customerBalanceRepository;
 
-    public EnterBalanceEntries(ITransactionRepository transactionRepository, final ICustomerBalanceRepository customerBalanceRepository) {
+    public EnterBalanceEntries(final ITransactionRepository transactionRepository, final ICustomerBalanceRepository customerBalanceRepository) {
         this.transactionRepository = transactionRepository;
         this.customerBalanceRepository = customerBalanceRepository;
     }
 
     @Override
-    public List<UserBalanceEntry> execute(final List<UserBalanceEntry> userBalanceEntries) {
+    public UsersBalancesEntries execute(final UsersBalancesEntries userBalanceEntries) {
         verifyRepeatTransactions(userBalanceEntries);
         verifyDatabaseTransactions(userBalanceEntries);
         updateUsersBalances(userBalanceEntries);
         return userBalanceEntries;
     }
 
-    private void updateUsersBalances(final List<UserBalanceEntry> userBalanceEntries) {
-        final var customersIds = userBalanceEntries.stream().map(UserBalanceEntry::getCustomerId).collect(Collectors.toUnmodifiableList());
+    private void updateUsersBalances(final UsersBalancesEntries userBalanceEntries) {
+        final var customersIds = userBalanceEntries.getCustomersIds();
         final var customersBalance = customerBalanceRepository.findAllById(customersIds);
 
         final var customersBalanceToUpdate = new ArrayList<CustomerBalance>();
 
         customersBalance.forEach(customerBalance -> {
             final var allBalances = userBalanceEntries
+                    .getUserBalanceEntries()
                     .stream()
                     .filter(userBalanceEntry -> userBalanceEntry.getCustomerId().equalsIgnoreCase(customerBalance.getCustomerId()))
                     .collect(Collectors.toUnmodifiableList());
@@ -58,11 +59,8 @@ public class EnterBalanceEntries implements IEnterBalanceEntries {
         customerBalanceRepository.save(customersBalanceToUpdate);
     }
 
-    private void verifyDatabaseTransactions(final List<UserBalanceEntry> userBalanceEntries) {
-        final var transactionsId = new ArrayList<String>();
-        userBalanceEntries.forEach(userBalanceEntry -> {
-            transactionsId.addAll(userBalanceEntry.getTransactionsId());
-        });
+    private void verifyDatabaseTransactions(final UsersBalancesEntries userBalanceEntries) {
+        final var transactionsId = userBalanceEntries.getTransactionsIds();
 
         final var existingTransactions = transactionRepository.findByTransactionsId(transactionsId);
 
@@ -70,24 +68,13 @@ public class EnterBalanceEntries implements IEnterBalanceEntries {
             throw new ExistingTransactionsException(existingTransactions.stream().map(Transaction::getTransactionId).collect(Collectors.toUnmodifiableList()));
         }
 
-        final var customerTransactions = new ArrayList<Transaction>();
-        userBalanceEntries.forEach(userBalanceEntry -> {
-            customerTransactions.addAll(userBalanceEntry.getTransactions());
-        });
-
+        final var customerTransactions = userBalanceEntries.getTransactions();
         transactionRepository.saveAll(customerTransactions);
     }
 
-    private void verifyRepeatTransactions(final List<UserBalanceEntry> userBalanceEntries) {
-        final var balanceEntries = new ArrayList<BalanceEntry>();
-        userBalanceEntries.forEach(userBalanceEntry -> {
-            balanceEntries.addAll(userBalanceEntry.getBalanceEntries());
-        });
-
-        final var balanceEntriesSemRepeticoes = balanceEntries.stream().map(BalanceEntry::getTransactionId).distinct().collect(Collectors.toList());
-
-        if (balanceEntries.size() != balanceEntriesSemRepeticoes.size()) {
-            final var transactionsId = balanceEntries.stream().map(BalanceEntry::getTransactionId).collect(Collectors.toUnmodifiableList());
+    private void verifyRepeatTransactions(final UsersBalancesEntries userBalanceEntries) {
+        if (userBalanceEntries.getBalanceEntries().size() != userBalanceEntries.getTransactionsIdsWithoutRepetitions().size()) {
+            final var transactionsId = userBalanceEntries.getTransactionsIds();
             final var repeatTransactionsId = RepeatTransactionsUtil.getRepeatTransactionsId(transactionsId);
             throw new TransactionIdFoundException(repeatTransactionsId);
         }
