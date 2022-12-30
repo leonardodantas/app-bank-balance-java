@@ -6,6 +6,5 @@ import java.util.List;
 
 public interface IEnterBalanceEntries {
 
-    UserBalanceEntry execute(final UserBalanceEntry userBalanceEntry);
     List<UserBalanceEntry> execute(final List<UserBalanceEntry> userBalanceEntries);
 }

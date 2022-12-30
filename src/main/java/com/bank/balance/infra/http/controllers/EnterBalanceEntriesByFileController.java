@@ -1,6 +1,7 @@
 package com.bank.balance.infra.http.controllers;
 
 import com.bank.balance.app.usecases.IEnterBalanceEntries;
+import com.bank.balance.app.usecases.IEnterBalanceEntry;
 import com.bank.balance.infra.http.converters.UserBalanceEntriesConverter;
 import com.bank.balance.infra.http.converters.UserBalanceEntryConverter;
 import com.bank.balance.infra.http.jsons.responses.UserBalanceEntriesResponse;
@@ -13,17 +14,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@Api(tags = "Enter Balance Entries")
 @RequestMapping("perform/launches")
+@Api(tags = "Enter Balance Entries")
 public class EnterBalanceEntriesByFileController {
 
     private final UserBalanceEntryConverter userBalanceEntryConverter;
     private final UserBalanceEntriesConverter userBalanceEntriesConverter;
+    private final IEnterBalanceEntry enterBalanceEntry;
     private final IEnterBalanceEntries enterBalanceEntries;
 
-    public EnterBalanceEntriesByFileController(final UserBalanceEntryConverter userBalanceEntryConverter, final UserBalanceEntriesConverter userBalanceEntriesConverter, final IEnterBalanceEntries enterBalanceEntries) {
+    public EnterBalanceEntriesByFileController(final UserBalanceEntryConverter userBalanceEntryConverter, final UserBalanceEntriesConverter userBalanceEntriesConverter, final IEnterBalanceEntry enterBalanceEntry, final IEnterBalanceEntries enterBalanceEntries) {
         this.userBalanceEntryConverter = userBalanceEntryConverter;
         this.userBalanceEntriesConverter = userBalanceEntriesConverter;
+        this.enterBalanceEntry = enterBalanceEntry;
         this.enterBalanceEntries = enterBalanceEntries;
     }
 
@@ -31,7 +34,7 @@ public class EnterBalanceEntriesByFileController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserBalanceEntriesResponse execute(@RequestParam("file") @RequestPart final MultipartFile request, @PathVariable final String customerId) {
         final var userBalanceEntries = userBalanceEntryConverter.toDomain(customerId).convert(request);
-        final var response = enterBalanceEntries.execute(userBalanceEntries);
+        final var response = enterBalanceEntry.execute(userBalanceEntries);
         return UserBalanceEntriesResponse.from(response);
     }
 

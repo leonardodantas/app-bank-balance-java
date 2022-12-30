@@ -4,18 +4,18 @@ import com.bank.balance.app.exceptions.ExistingTransactionsException;
 import com.bank.balance.app.exceptions.TransactionIdFoundException;
 import com.bank.balance.app.repositories.ICustomerBalanceRepository;
 import com.bank.balance.app.repositories.ITransactionRepository;
-import com.bank.balance.app.repositories.IUserBalanceEntryRepository;
 import com.bank.balance.app.usecases.IEnterBalanceEntries;
-import com.bank.balance.app.usecases.IFindCustomerBalance;
-import com.bank.balance.app.usecases.ISaveCustomerBalance;
-import com.bank.balance.app.usecases.ISaveTransactions;
 import com.bank.balance.app.utils.RepeatTransactionsUtil;
+import com.bank.balance.domain.BalanceEntry;
 import com.bank.balance.domain.CustomerBalance;
 import com.bank.balance.domain.Transaction;
 import com.bank.balance.domain.UserBalanceEntry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,56 +24,45 @@ import java.util.stream.Collectors;
 public class EnterBalanceEntries implements IEnterBalanceEntries {
 
     private final ITransactionRepository transactionRepository;
-    private final IFindCustomerBalance findCustomerBalance;
-    private final ISaveCustomerBalance saveCustomerBalance;
-    private final ISaveTransactions saveTransactions;
-    private final IUserBalanceEntryRepository balanceEntryRepository;
     private final ICustomerBalanceRepository customerBalanceRepository;
 
-    public EnterBalanceEntries(final ITransactionRepository transactionRepository, final IFindCustomerBalance findCustomerBalance, final ISaveCustomerBalance saveCustomerBalance, final ISaveTransactions saveTransactions, final IUserBalanceEntryRepository balanceEntryRepository, ICustomerBalanceRepository customerBalanceRepository) {
+    public EnterBalanceEntries(ITransactionRepository transactionRepository, final ICustomerBalanceRepository customerBalanceRepository) {
         this.transactionRepository = transactionRepository;
-        this.findCustomerBalance = findCustomerBalance;
-        this.saveCustomerBalance = saveCustomerBalance;
-        this.saveTransactions = saveTransactions;
-        this.balanceEntryRepository = balanceEntryRepository;
         this.customerBalanceRepository = customerBalanceRepository;
     }
 
     @Override
-    public UserBalanceEntry execute(final UserBalanceEntry userBalanceEntry) {
-        log.info("Initialized execute user balance entries");
-        checkIfAnyNewTransactionsAlreadyExistInTheDatabaseAndSaveTheNewTransactions(userBalanceEntry);
-        updateUserBalance(userBalanceEntry);
-        return balanceEntryRepository.save(userBalanceEntry);
-    }
-
-    @Override
     public List<UserBalanceEntry> execute(final List<UserBalanceEntry> userBalanceEntries) {
-        log.info("Initialized execute list of user balance entries");
-
-        userBalanceEntries.forEach(this::checkIfAnyNewTransactionsAlreadyExistInTheDatabaseAndSaveTheNewTransactions);
-        userBalanceEntries.forEach(this::updateUserBalance);
-
-        return balanceEntryRepository.save(userBalanceEntries);
+        verifyRepeatTransactions(userBalanceEntries);
+        verifyDatabaseTransactions(userBalanceEntries);
+        updateUsersBalances(userBalanceEntries);
+        return userBalanceEntries;
     }
 
+    private void updateUsersBalances(final List<UserBalanceEntry> userBalanceEntries) {
+        final var customersIds = userBalanceEntries.stream().map(UserBalanceEntry::getCustomerId).collect(Collectors.toUnmodifiableList());
+        final var customersBalance = customerBalanceRepository.findAllById(customersIds);
 
-    private void updateUserBalance(final UserBalanceEntry userBalanceEntry) {
-        final var balance = userBalanceEntry.getBalance();
+        final var customersBalanceToUpdate = new ArrayList<CustomerBalance>();
 
-        findCustomerBalance.execute(userBalanceEntry.getCustomerId())
-                .ifPresentOrElse((customerBalance) -> {
-                    final var existingBalance = customerBalance.getBalance();
-                    final var customerBalanceToUpdate = CustomerBalance.of(userBalanceEntry.getCustomerId(), existingBalance.add(balance));
-                    saveCustomerBalance.execute(customerBalanceToUpdate);
-                }, () -> {
-                    final var customerBalanceToSave = CustomerBalance.of(userBalanceEntry.getCustomerId(), balance);
-                    saveCustomerBalance.execute(customerBalanceToSave);
-                });
+        customersBalance.forEach(customerBalance -> {
+            final var allBalances = userBalanceEntries
+                    .stream()
+                    .filter(userBalanceEntry -> userBalanceEntry.getCustomerId().equalsIgnoreCase(customerBalance.getCustomerId()))
+                    .collect(Collectors.toUnmodifiableList());
+
+            final var balance = allBalances.stream().map(UserBalanceEntry::getBalance).reduce(BigDecimal.ZERO, BigDecimal::add);
+            customersBalanceToUpdate.add(CustomerBalance.of(customerBalance.getCustomerId(), customerBalance.getBalance().add(balance), LocalDateTime.now()));
+        });
+
+        customerBalanceRepository.save(customersBalanceToUpdate);
     }
 
-    private void checkIfAnyNewTransactionsAlreadyExistInTheDatabaseAndSaveTheNewTransactions(final UserBalanceEntry userBalanceEntry) {
-        final var transactionsId = checkingIfThereAreRepeatedTransactionsInTheList(userBalanceEntry);
+    private void verifyDatabaseTransactions(final List<UserBalanceEntry> userBalanceEntries) {
+        final var transactionsId = new ArrayList<String>();
+        userBalanceEntries.forEach(userBalanceEntry -> {
+            transactionsId.addAll(userBalanceEntry.getTransactionsId());
+        });
 
         final var existingTransactions = transactionRepository.findByTransactionsId(transactionsId);
 
@@ -81,19 +70,26 @@ public class EnterBalanceEntries implements IEnterBalanceEntries {
             throw new ExistingTransactionsException(existingTransactions.stream().map(Transaction::getTransactionId).collect(Collectors.toUnmodifiableList()));
         }
 
-        final var customerTransactions = userBalanceEntry.getTransactions();
-        saveTransactions.execute(customerTransactions);
+        final var customerTransactions = new ArrayList<Transaction>();
+        userBalanceEntries.forEach(userBalanceEntry -> {
+            customerTransactions.addAll(userBalanceEntry.getTransactions());
+        });
+
+        transactionRepository.saveAll(customerTransactions);
     }
 
-    private List<String> checkingIfThereAreRepeatedTransactionsInTheList(final UserBalanceEntry userBalanceEntry) {
-        final var transactionsId = userBalanceEntry.getTransactionsId();
+    private void verifyRepeatTransactions(final List<UserBalanceEntry> userBalanceEntries) {
+        final var balanceEntries = new ArrayList<BalanceEntry>();
+        userBalanceEntries.forEach(userBalanceEntry -> {
+            balanceEntries.addAll(userBalanceEntry.getBalanceEntries());
+        });
 
-        if (userBalanceEntry.isTransactionsRepeat()) {
+        final var balanceEntriesSemRepeticoes = balanceEntries.stream().map(BalanceEntry::getTransactionId).distinct().collect(Collectors.toList());
+
+        if (balanceEntries.size() != balanceEntriesSemRepeticoes.size()) {
+            final var transactionsId = balanceEntries.stream().map(BalanceEntry::getTransactionId).collect(Collectors.toUnmodifiableList());
             final var repeatTransactionsId = RepeatTransactionsUtil.getRepeatTransactionsId(transactionsId);
             throw new TransactionIdFoundException(repeatTransactionsId);
         }
-
-        return transactionsId;
     }
-
 }

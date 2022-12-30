@@ -51,4 +51,18 @@ public class CustomerBalanceRepository implements ICustomerBalanceRepository {
         final var customerBalanceEntity = customerBalanceJpaRepository.findAllById(customersIds);
         return customerBalanceEntity.stream().map(customerBalanceEntityToCustomerBalance::convert).collect(Collectors.toUnmodifiableList());
     }
+
+    @Override
+    public void save(final List<CustomerBalance> customerBalances) {
+        try {
+            final var customerBalancesEntity = customerBalances
+                    .stream()
+                    .map(CustomerBalanceEntity::from)
+                    .collect(Collectors.toUnmodifiableList());
+            customerBalanceJpaRepository.saveAll(customerBalancesEntity);
+        } catch (final Exception e){
+            log.error("Error save customerEntity List: {}", e.getMessage());
+            throw new SaveEntityException(e.getMessage());
+        }
+    }
 }
