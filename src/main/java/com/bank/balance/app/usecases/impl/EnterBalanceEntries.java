@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -73,7 +72,7 @@ public class EnterBalanceEntries implements IEnterBalanceEntries {
     }
 
     private void verifyRepeatTransactions(final UsersBalancesEntries userBalanceEntries) {
-        if (userBalanceEntries.getBalanceEntries().size() != userBalanceEntries.getTransactionsIdsWithoutRepetitions().size()) {
+        if (userBalanceEntries.isRepeated()) {
             final var transactionsId = userBalanceEntries.getTransactionsIds();
             final var repeatTransactionsId = RepeatTransactionsUtil.getRepeatTransactionsId(transactionsId);
             throw new TransactionIdFoundException(repeatTransactionsId);

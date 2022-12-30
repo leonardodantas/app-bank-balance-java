@@ -19,7 +19,7 @@ public class UsersBalancesEntries {
         return new UsersBalancesEntries(userBalanceEntries);
     }
 
-    public List<BalanceEntry> getBalanceEntries() {
+    private List<BalanceEntry> getBalanceEntries() {
         final var balanceEntries = new ArrayList<BalanceEntry>();
         userBalanceEntries.forEach(userBalanceEntry -> {
             balanceEntries.addAll(userBalanceEntry.getBalanceEntries());
@@ -27,7 +27,7 @@ public class UsersBalancesEntries {
         return balanceEntries;
     }
 
-    public List<String> getTransactionsIdsWithoutRepetitions(){
+    private List<String> getTransactionsIdsWithoutRepetitions() {
         return this.getBalanceEntries()
                 .stream()
                 .map(BalanceEntry::getTransactionId)
@@ -35,7 +35,7 @@ public class UsersBalancesEntries {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public List<String> getTransactionsIds(){
+    public List<String> getTransactionsIds() {
         return this.getBalanceEntries()
                 .stream()
                 .map(BalanceEntry::getTransactionId)
@@ -43,18 +43,22 @@ public class UsersBalancesEntries {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public List<Transaction> getTransactions(){
+    public List<Transaction> getTransactions() {
         return this.getBalanceEntries()
                 .stream()
                 .map(Transaction::from)
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public List<String> getCustomersIds(){
+    public List<String> getCustomersIds() {
         return userBalanceEntries
                 .stream()
                 .map(UserBalanceEntry::getCustomerId)
                 .collect(Collectors.toUnmodifiableList());
+    }
+
+    public boolean isRepeated() {
+        return this.getBalanceEntries().size() != this.getTransactionsIdsWithoutRepetitions().size();
     }
 
 }
