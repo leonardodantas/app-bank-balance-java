@@ -40,7 +40,7 @@ public class EnterBalanceEntriesByFileController {
     @ResponseStatus(HttpStatus.CREATED)
     public List<UserBalanceEntriesResponse> execute(@RequestParam("file") @RequestPart final MultipartFile request) {
         final var usersBalanceEntries = userBalanceEntriesConverter.convert(request);
-        final var response = enterBalanceEntries.execute(usersBalanceEntries);
+        final var response = enterBalanceEntries.execute(UsersBalancesEntriesAdapter.from(usersBalanceEntries));
         return response.getUserBalanceEntries().stream().map(UserBalanceEntriesResponse::from).collect(Collectors.toUnmodifiableList());
     }
 }

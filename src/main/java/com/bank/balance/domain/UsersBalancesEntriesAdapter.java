@@ -5,12 +5,17 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Getter
 public class UsersBalancesEntriesAdapter {
 
     private final List<UserBalanceEntry> userBalanceEntries;
+
+    public UsersBalancesEntriesAdapter() {
+        this.userBalanceEntries = List.of();
+    }
 
     private UsersBalancesEntriesAdapter(final List<UserBalanceEntry> userBalanceEntries) {
         this.userBalanceEntries = userBalanceEntries;
@@ -24,12 +29,16 @@ public class UsersBalancesEntriesAdapter {
         return new UsersBalancesEntriesAdapter(Collections.singletonList(userBalanceEntries));
     }
 
+    public static UsersBalancesEntriesAdapter from(final UsersBalancesEntries usersBalanceEntries) {
+        return new UsersBalancesEntriesAdapter(usersBalanceEntries.getUserBalanceEntries());
+    }
+
     private List<BalanceEntry> getBalanceEntries() {
         final var balanceEntries = new ArrayList<BalanceEntry>();
         userBalanceEntries.forEach(userBalanceEntry -> {
             balanceEntries.addAll(userBalanceEntry.getBalanceEntries());
         });
-        return balanceEntries;
+        return Collections.unmodifiableList(balanceEntries);
     }
 
     private List<String> getTransactionsIdsWithoutRepetitions() {
@@ -66,8 +75,10 @@ public class UsersBalancesEntriesAdapter {
         return this.getBalanceEntries().size() != this.getTransactionsIdsWithoutRepetitions().size();
     }
 
-    public UserBalanceEntry getOne(){
-        return this.userBalanceEntries.get(0);
+    public UserBalanceEntry getOne() {
+        return Optional.ofNullable(this.userBalanceEntries.get(0))
+                .orElse(new UserBalanceEntry());
+
     }
 
 }
