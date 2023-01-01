@@ -18,7 +18,7 @@
     {
       "transactionId": "a5470250-74ec-496c-a26c-edd30e708fa0",
       "description": "Saque",
-      "value": "1000",
+      "value": "-1000",
       "date": "2022-12-10 10:00:00",
       "transactionType": "WITHDRAW"
     }

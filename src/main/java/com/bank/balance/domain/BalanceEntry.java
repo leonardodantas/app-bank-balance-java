@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -12,10 +14,19 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class BalanceEntry {
 
+    @NotBlank
     private String transactionId;
+    @NotBlank
     private String description;
+    @NotNull
     private BigDecimal value;
+    @NotNull
     private LocalDateTime date;
+    @NotNull
     private TransactionType transactionType;
+
+    public boolean isInvalidTransaction() {
+        return transactionType.isInvalid(value);
+    }
 
 }

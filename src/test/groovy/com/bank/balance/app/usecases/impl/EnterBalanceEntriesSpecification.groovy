@@ -69,5 +69,8 @@ class EnterBalanceEntriesSpecification extends Specification {
         then: "thrown ExistingTransactionsException"
         thrown ExistingTransactionsException
     }
+    /**
+     * Criar novo teste para validar tipos e valores das transações
+     */
 
 }
