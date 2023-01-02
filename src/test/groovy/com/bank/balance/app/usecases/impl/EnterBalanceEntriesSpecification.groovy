@@ -2,6 +2,7 @@ package com.bank.balance.app.usecases.impl
 
 import com.bank.balance.app.exceptions.ExistingTransactionsException
 import com.bank.balance.app.exceptions.TransactionIdFoundException
+import com.bank.balance.app.exceptions.TransactionTypeInvalidException
 import com.bank.balance.app.repositories.ICustomerBalanceRepository
 import com.bank.balance.app.repositories.ITransactionRepository
 import com.bank.balance.domain.CustomerBalance
@@ -69,8 +70,28 @@ class EnterBalanceEntriesSpecification extends Specification {
         then: "thrown ExistingTransactionsException"
         thrown ExistingTransactionsException
     }
-    /**
-     * Criar novo teste para validar tipos e valores das transações
-     */
+
+    def "shouldThrownTransactionTypeInvalidExceptionWithDepositInvalid"() {
+        given: "a valid userBalanceEntry"
+        def userBalanceEntry = getMockJson.execute("usuario-com-deposito-invalido", UserBalanceEntry.class)
+
+        when: "run the enterBalanceEntries use case"
+        enterBalanceEntries.execute(UsersBalancesEntriesAdapter.from(userBalanceEntry))
+
+        then: "thrown TransactionTypeInvalidException"
+        thrown TransactionTypeInvalidException
+    }
+
+
+    def "shouldThrownTransactionTypeInvalidExceptionWithWithdrawInvalid"() {
+        given: "a valid userBalanceEntry"
+        def userBalanceEntry = getMockJson.execute("usuario-com-saque-invalido", UserBalanceEntry.class)
+
+        when: "run the enterBalanceEntries use case"
+        enterBalanceEntries.execute(UsersBalancesEntriesAdapter.from(userBalanceEntry))
+
+        then: "thrown TransactionTypeInvalidException"
+        thrown TransactionTypeInvalidException
+    }
 
 }

@@ -7,7 +7,10 @@ import com.bank.balance.app.repositories.ICustomerBalanceRepository;
 import com.bank.balance.app.repositories.ITransactionRepository;
 import com.bank.balance.app.usecases.IEnterBalanceEntries;
 import com.bank.balance.app.utils.RepeatTransactionsUtil;
-import com.bank.balance.domain.*;
+import com.bank.balance.domain.CustomerBalance;
+import com.bank.balance.domain.Transaction;
+import com.bank.balance.domain.UserBalanceEntry;
+import com.bank.balance.domain.UsersBalancesEntriesAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -40,12 +43,15 @@ public class EnterBalanceEntries implements IEnterBalanceEntries {
 
     private void verifyTransactionsBalance(final UsersBalancesEntriesAdapter userBalanceEntries) {
         final var allInvalidTransactions = new ArrayList<String>();
-        for (var balanceEntry : userBalanceEntries.getUserBalanceEntries()){
+        for (var balanceEntry : userBalanceEntries.getUserBalanceEntries()) {
             final var invalidTransactions = balanceEntry.getInvalidTransactions();
             allInvalidTransactions.addAll(invalidTransactions);
         }
 
-        throw new TransactionTypeInvalidException(allInvalidTransactions);
+        if (!allInvalidTransactions.isEmpty()) {
+            throw new TransactionTypeInvalidException(allInvalidTransactions);
+        }
+
     }
 
     private void updateUsersBalances(final UsersBalancesEntriesAdapter userBalanceEntries) {

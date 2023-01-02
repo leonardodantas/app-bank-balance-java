@@ -4,7 +4,7 @@
     {
       "transactionId": "1d21405d-adcc-49a9-88c3-d2dea2a89b8e",
       "description": "Saque",
-      "value": "10000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ",
+      "value": "-10000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ",
       "date": "2022-12-10 10:00:00",
       "transactionType": "WITHDRAW"
     },
@@ -25,7 +25,7 @@
     {
       "transactionId": "a5470250-74ec-496c-a26c-edd30e708fa0",
       "description": "Saque",
-      "value": "1000",
+      "value": "-1000",
       "date": "2022-12-10 10:00:00",
       "transactionType": "WITHDRAW"
     }
