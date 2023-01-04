@@ -1,0 +1,14 @@
+{
+  "customerId": "b488d7a7-5029-4921-a813-f62d099e08da",
+  "balanceEntries": [
+    {
+      "transactionId": "1d21405d-adcc-49a9-88c3-d2dea2a89b8e",
+      "description": "Deposito",
+      "value": "1000",
+      "date": "2022-12-10 10:00:00",
+      "transactionType": "DEPOSIT"
+    }
+  ]
+}
+
+
