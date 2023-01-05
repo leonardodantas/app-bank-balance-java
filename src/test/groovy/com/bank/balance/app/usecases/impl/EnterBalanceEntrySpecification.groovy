@@ -32,10 +32,10 @@ class EnterBalanceEntrySpecification extends Specification {
         customerBalanceRepository.findAllById(_ as List<String>) >> List.of()
 
         when: "run the enterBalanceEntries use case"
-        def response = enterBalanceEntries.execute(UsersBalancesEntriesAdapter.from(userBalanceEntry))
+        def result = enterBalanceEntries.execute(UsersBalancesEntriesAdapter.from(userBalanceEntry))
 
-        then: "response must be different from null"
-        assert response != null
+        then: "result must be different from null"
+        assert result != null
 
         and: "save user balance list of size one, one time"
         1 * customerBalanceRepository.save(_ as List<CustomerBalance>) >> {
@@ -55,10 +55,10 @@ class EnterBalanceEntrySpecification extends Specification {
         customerBalanceRepository.findAllById(_ as List<String>) >> List.of()
 
         when: "run the enterBalanceEntries use case"
-        def response = enterBalanceEntries.execute(UsersBalancesEntriesAdapter.from(userBalanceEntry))
+        def result = enterBalanceEntries.execute(UsersBalancesEntriesAdapter.from(userBalanceEntry))
 
-        then: "response must be different from null"
-        assert response != null
+        then: "result must be different from null"
+        assert result != null
 
         and: "save user balance list of size one, one time"
         1 * customerBalanceRepository.save(_ as List<CustomerBalance>) >> {
@@ -71,26 +71,27 @@ class EnterBalanceEntrySpecification extends Specification {
         given: "a valid userBalanceEntry"
         def userBalanceEntry = getMockJson.execute("usuario-com-uma-transacao-valida", UserBalanceEntry.class)
 
-        and: "return a list of existing transactions in the database"
+        and: "when there is no json transaction already stored in the database"
         transactionRepository.findByTransactionsId(_ as List<String>) >> List.of()
 
-        and: "there is no user with the balance saved in the database"
+        and: "user with existing balance"
         def customerBalance = getMockJson.execute("saldo-usuario-valido", new TypeReference<List<CustomerBalance>>() {
         })
         customerBalanceRepository.findAllById(_ as List<String>) >> customerBalance
 
         when: "run the enterBalanceEntries use case"
-        def response = enterBalanceEntries.execute(UsersBalancesEntriesAdapter.from(userBalanceEntry))
+        def result = enterBalanceEntries.execute(UsersBalancesEntriesAdapter.from(userBalanceEntry))
 
-        then: "response must be different from null"
-        assert response != null
+        then: "result must be different from null"
+        assert result != null
 
-        and: "save user balance list of size one, one time"
+        and: "save user balance list of size one with balance equals 1200"
         1 * customerBalanceRepository.save(_ as List<CustomerBalance>) >> {
             List<List<CustomerBalance>> expected ->
                 assert expected.get(0).get(0).getBalance() == BigDecimal.valueOf(1200)
         }
 
+        and: "save transactions list, one time"
         1 * transactionRepository.saveAll(_ as List<Transaction>)
     }
 
@@ -131,7 +132,6 @@ class EnterBalanceEntrySpecification extends Specification {
         then: "thrown TransactionTypeInvalidException"
         thrown TransactionTypeInvalidException
     }
-
 
     def "shouldThrownTransactionTypeInvalidExceptionWithWithdrawInvalid"() {
         given: "a valid userBalanceEntry"
