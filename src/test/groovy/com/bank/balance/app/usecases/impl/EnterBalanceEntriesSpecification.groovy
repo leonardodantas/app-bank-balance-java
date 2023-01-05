@@ -1,6 +1,8 @@
 package com.bank.balance.app.usecases.impl
 
-
+import com.bank.balance.app.exceptions.ExistingTransactionsException
+import com.bank.balance.app.exceptions.TransactionIdFoundException
+import com.bank.balance.app.exceptions.TransactionTypeInvalidException
 import com.bank.balance.app.repositories.ICustomerBalanceRepository
 import com.bank.balance.app.repositories.ITransactionRepository
 import com.bank.balance.domain.CustomerBalance
@@ -72,5 +74,46 @@ class EnterBalanceEntriesSpecification extends Specification {
             List<List<Transaction>> expected ->
                 assert expected.get(0).size() == 12
         }
+    }
+
+    def "shouldThrowTransactionTypeInvalidException"() {
+        given: "a valid userBalanceEntries list"
+        def userBalanceEntry = getMockJson.execute("usuarios-com-saques-invalidos", new TypeReference<List<UserBalanceEntry>>() {
+        })
+
+        when: "execute enterBalanceEntries"
+        enterBalanceEntries.execute(UsersBalancesEntriesAdapter.from(userBalanceEntry))
+
+        then: "thrown TransactionTypeInvalidException"
+        thrown TransactionTypeInvalidException
+    }
+
+    def "shouldThrowTransactionIdFoundException"() {
+        given: "a valid userBalanceEntries list"
+        def userBalanceEntry = getMockJson.execute("usuarios-com-transacoes-repetidas", new TypeReference<List<UserBalanceEntry>>() {
+        })
+
+        when: "execute enterBalanceEntries"
+        enterBalanceEntries.execute(UsersBalancesEntriesAdapter.from(userBalanceEntry))
+
+        then: "thrown TransactionTypeInvalidException"
+        thrown TransactionIdFoundException
+    }
+
+    def "shouldThrowExistingTransactionsException"() {
+        given: "a valid userBalanceEntries list"
+        def userBalanceEntry = getMockJson.execute("usuarios-com-transacoes-validas", new TypeReference<List<UserBalanceEntry>>() {
+        })
+
+        and: "return a list of existing transactions in the database"
+        def transactions = getMockJson.execute("transacoes-armazenadas-banco-de-dados", new TypeReference<List<Transaction>>() {
+        })
+        transactionRepository.findByTransactionsId(_ as List<String>) >> transactions
+
+        when: "execute enterBalanceEntries"
+        enterBalanceEntries.execute(UsersBalancesEntriesAdapter.from(userBalanceEntry))
+
+        then: "throw ExistingTransactionsException"
+        thrown ExistingTransactionsException
     }
 }
