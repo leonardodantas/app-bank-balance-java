@@ -43,10 +43,10 @@ public class EnterBalanceEntries implements IEnterBalanceEntries {
 
     private void verifyTransactionsBalance(final UsersBalancesEntriesAdapter userBalanceEntries) {
         final var allInvalidTransactions = new ArrayList<String>();
-        for (var balanceEntry : userBalanceEntries.getUserBalanceEntries()) {
-            final var invalidTransactions = balanceEntry.getInvalidTransactions();
-            allInvalidTransactions.addAll(invalidTransactions);
-        }
+
+        userBalanceEntries.getUserBalanceEntries()
+                .stream()
+                .map(UserBalanceEntry::getInvalidTransactions).forEach(allInvalidTransactions::addAll);
 
         if (!allInvalidTransactions.isEmpty()) {
             throw new TransactionTypeInvalidException(allInvalidTransactions);

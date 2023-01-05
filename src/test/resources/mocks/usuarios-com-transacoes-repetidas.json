@@ -1,0 +1,80 @@
+[
+  {
+    "customerId": "b488d7a7-5029-4921-a813-f62d099e08da",
+    "balanceEntries": [
+      {
+        "transactionId": "1d21405d-adcc-49a9-88c3-d2dea2a89b8e",
+        "description": "Deposito",
+        "value": "1000",
+        "date": "2022-12-10 10:00:00",
+        "transactionType": "DEPOSIT"
+      },
+      {
+        "transactionId": "db65b215-3332-4294-bf44-1d70d81b2b92",
+        "description": "Deposito",
+        "value": "1000",
+        "date": "2022-12-10 10:00:00",
+        "transactionType": "DEPOSIT"
+      },
+      {
+        "transactionId": "a5470250-74ec-496c-a26c-edd30e708fa0",
+        "description": "Saque",
+        "value": "-1000",
+        "date": "2022-12-10 10:00:00",
+        "transactionType": "WITHDRAW"
+      }
+    ]
+  },
+  {
+    "customerId": "0d3ef50c-8c91-11ed-a1eb-0242ac120002",
+    "balanceEntries": [
+      {
+        "transactionId": "1d21405d-adcc-49a9-88c3-d2dea2a89b8e",
+        "description": "Deposito",
+        "value": "1000",
+        "date": "2022-12-10 10:00:00",
+        "transactionType": "DEPOSIT"
+      },
+      {
+        "transactionId": "231514d8-8c91-11ed-a1eb-0242ac120002",
+        "description": "Deposito",
+        "value": "1000",
+        "date": "2022-12-10 10:00:00",
+        "transactionType": "DEPOSIT"
+      },
+      {
+        "transactionId": "29b92c98-8c91-11ed-a1eb-0242ac120002",
+        "description": "Saque",
+        "value": "-1000",
+        "date": "2022-12-10 10:00:00",
+        "transactionType": "WITHDRAW"
+      }
+    ]
+  },
+  {
+    "customerId": "36a8b478-8c91-11ed-a1eb-0242ac120002",
+    "balanceEntries": [
+      {
+        "transactionId": "3d74e63c-8c91-11ed-a1eb-0242ac120002",
+        "description": "Deposito",
+        "value": "1000",
+        "date": "2022-12-10 10:00:00",
+        "transactionType": "DEPOSIT"
+      },
+      {
+        "transactionId": "432b3662-8c91-11ed-a1eb-0242ac120002",
+        "description": "Deposito",
+        "value": "1000",
+        "date": "2022-12-10 10:00:00",
+        "transactionType": "DEPOSIT"
+      },
+      {
+        "transactionId": "1d21405d-adcc-49a9-88c3-d2dea2a89b8e",
+        "description": "Saque",
+        "value": "-1000",
+        "date": "2022-12-10 10:00:00",
+        "transactionType": "WITHDRAW"
+      }
+    ]
+  }
+]
