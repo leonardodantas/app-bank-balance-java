@@ -37,7 +37,7 @@ public class UserBalanceEntryConverter {
             });
         } catch (final IOException e) {
             log.error("Error {} ", e.getMessage());
-            throw new ConvertFileException(e.getMessage());
+            throw new ConvertFileException(e.getMessage(), e.getCause());
         }
     }
 }

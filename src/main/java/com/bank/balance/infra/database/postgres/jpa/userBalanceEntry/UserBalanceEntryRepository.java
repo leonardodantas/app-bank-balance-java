@@ -31,7 +31,7 @@ public class UserBalanceEntryRepository implements IUserBalanceEntryRepository {
             return userBalanceEntryEntityToUserBalanceEntry.convert(userBalanceEntitySave);
         } catch (final Exception e) {
             log.error("Error to save UserBalanceEntry: {}", e.getMessage());
-            throw new SaveEntityException(e.getMessage());
+            throw new SaveEntityException(e.getMessage(), e.getCause());
         }
     }
 
@@ -43,7 +43,7 @@ public class UserBalanceEntryRepository implements IUserBalanceEntryRepository {
             return userBalanceEntriesEntitySave.stream().map(userBalanceEntryEntityToUserBalanceEntry::convert).collect(Collectors.toUnmodifiableList());
         } catch (final Exception e) {
             log.error("Error to save UserBalanceEntry List: {}", e.getMessage());
-            throw new SaveEntityException(e.getMessage());
+            throw new SaveEntityException(e.getMessage(), e.getCause());
         }
     }
 }

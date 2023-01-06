@@ -44,7 +44,7 @@ public class TransactionRepository implements ITransactionRepository {
             transactionJpaRepository.saveAll(transactionToSave);
         } catch (final Exception e) {
             log.error("Error save TransactionEntity: {}", e.getMessage());
-            throw new SaveEntityException(e.getMessage());
+            throw new SaveEntityException(e.getMessage(), e.getCause());
         }
 
     }

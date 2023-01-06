@@ -41,7 +41,7 @@ public class CustomerBalanceRepository implements ICustomerBalanceRepository {
             return customerBalanceEntityToCustomerBalance.convert(customerEntitySave);
         } catch (final Exception e) {
             log.error("Error save customerEntity: {}", e.getMessage());
-            throw new SaveEntityException(e.getMessage());
+            throw new SaveEntityException(e.getMessage(), e.getCause());
         }
 
     }
@@ -60,9 +60,9 @@ public class CustomerBalanceRepository implements ICustomerBalanceRepository {
                     .map(CustomerBalanceEntity::from)
                     .collect(Collectors.toUnmodifiableList());
             customerBalanceJpaRepository.saveAll(customerBalancesEntity);
-        } catch (final Exception e){
+        } catch (final Exception e) {
             log.error("Error save customerEntity List: {}", e.getMessage());
-            throw new SaveEntityException(e.getMessage());
+            throw new SaveEntityException(e.getMessage(), e.getCause());
         }
     }
 }

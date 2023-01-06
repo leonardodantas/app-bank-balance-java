@@ -2,7 +2,6 @@ package com.bank.balance.infra.http.converters;
 
 import com.bank.balance.domain.UserBalanceEntry;
 import com.bank.balance.domain.UsersBalancesEntries;
-import com.bank.balance.domain.UsersBalancesEntriesAdapter;
 import com.bank.balance.infra.exceptions.ConvertFileException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,7 +36,7 @@ public class UserBalanceEntriesConverter implements Converter<MultipartFile, Use
             });
         } catch (final IOException e) {
             log.error("Error {} ", e.getMessage());
-            throw new ConvertFileException(e.getMessage());
+            throw new ConvertFileException(e.getMessage(), e.getCause());
         }
     }
 }
