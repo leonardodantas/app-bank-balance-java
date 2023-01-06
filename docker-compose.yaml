@@ -43,7 +43,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
   mongodb:
-    image: mongo:4.4.6
+    image: mongo:4.2.23
     ports:
       - 27017:27017
     environment:
