@@ -22,8 +22,11 @@ public class BalanceEntryEntity {
 
     @Column(length = 120)
     private String description;
+    @Column
     private BigDecimal value;
+    @Column
     private LocalDateTime date;
+    @Column
     private TransactionTypeEntity transactionType;
 
     private BalanceEntryEntity(final BalanceEntry balanceEntry) {
