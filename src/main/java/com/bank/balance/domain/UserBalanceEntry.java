@@ -3,6 +3,7 @@ package com.bank.balance.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -16,6 +17,7 @@ public class UserBalanceEntry {
     @NotBlank
     private String customerId;
 
+    @Valid
     @NotNull
     private List<BalanceEntry> balanceEntries;
 
@@ -59,7 +61,7 @@ public class UserBalanceEntry {
                 .stream().map(Transaction::from).collect(Collectors.toUnmodifiableList());
     }
 
-    public List<String> getInvalidTransactions(){
+    public List<String> getInvalidTransactions() {
         return this.balanceEntries
                 .stream()
                 .filter(BalanceEntry::isInvalidTransaction)

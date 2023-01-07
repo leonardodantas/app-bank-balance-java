@@ -10,8 +10,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
+
 @ControllerAdvice
 public class AdviceController {
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handlerConstraintViolationException(final ConstraintViolationException exception) {
+        final var response = ErrorResponse.from(exception.getMessage());
+        return ResponseEntity.badRequest().body(response);
+    }
 
     @ExceptionHandler(TransactionIdFoundException.class)
     public ResponseEntity<ErrorResponse> handlerTransactionIdFoundException(final TransactionIdFoundException exception) {
