@@ -49,11 +49,18 @@ public class UsersBalancesEntriesAdapter {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public List<String> getTransactionsIds() {
+    public List<String> getNonRepeatingTransactionsIds() {
         return this.getBalanceEntries()
                 .stream()
                 .map(BalanceEntry::getTransactionId)
                 .distinct()
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    public List<String> getTransactionsIds() {
+        return this.getBalanceEntries()
+                .stream()
+                .map(BalanceEntry::getTransactionId)
                 .collect(Collectors.toUnmodifiableList());
     }
 

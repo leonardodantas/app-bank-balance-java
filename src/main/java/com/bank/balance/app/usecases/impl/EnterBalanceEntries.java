@@ -97,7 +97,7 @@ public class EnterBalanceEntries implements IEnterBalanceEntries {
     }
 
     private void verifyDatabaseTransactions(final UsersBalancesEntriesAdapter userBalanceEntries) {
-        final var transactionsId = userBalanceEntries.getTransactionsIds();
+        final var transactionsId = userBalanceEntries.getNonRepeatingTransactionsIds();
 
         final var existingTransactions = transactionRepository.findByTransactionsId(transactionsId);
 

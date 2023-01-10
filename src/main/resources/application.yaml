@@ -20,7 +20,7 @@ spring:
     database: POSTGRESQL
     show-sql: true
     hibernate:
-    ddl-auto: update
+      ddl-auto: update
   datasource:
     platform: postgres
     url: jdbc:postgresql://localhost:5432/bankBalance
