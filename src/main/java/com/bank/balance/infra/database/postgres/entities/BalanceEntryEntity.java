@@ -4,10 +4,7 @@ import com.bank.balance.domain.BalanceEntry;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -28,6 +25,10 @@ public class BalanceEntryEntity {
     private LocalDateTime date;
     @Column
     private TransactionTypeEntity transactionType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
+    private UserBalanceEntryEntity userBalanceEntry;
 
     private BalanceEntryEntity(final BalanceEntry balanceEntry) {
         this.transactionId = balanceEntry.getTransactionId();

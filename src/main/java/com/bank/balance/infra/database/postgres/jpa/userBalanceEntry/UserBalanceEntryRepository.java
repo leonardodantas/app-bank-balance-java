@@ -26,7 +26,7 @@ public class UserBalanceEntryRepository implements IUserBalanceEntryRepository {
     @Override
     public UserBalanceEntry save(final UserBalanceEntry userBalanceEntry) {
         try {
-            final var userBalanceEntryEntity = UserBalanceEntryEntity.from(userBalanceEntry);
+            final var userBalanceEntryEntity = UserBalanceEntryEntity.of(userBalanceEntry.getCustomerId(), userBalanceEntry.getBalanceEntries());
             final var userBalanceEntitySave = userBalanceEntryJpaRepository.save(userBalanceEntryEntity);
             return userBalanceEntryEntityToUserBalanceEntry.convert(userBalanceEntitySave);
         } catch (final Exception e) {
@@ -38,8 +38,13 @@ public class UserBalanceEntryRepository implements IUserBalanceEntryRepository {
     @Override
     public List<UserBalanceEntry> save(final List<UserBalanceEntry> userBalanceEntries) {
         try {
-            final var userBalanceEntriesEntity = userBalanceEntries.stream().map(UserBalanceEntryEntity::from).collect(Collectors.toUnmodifiableList());
+            final var userBalanceEntriesEntity = userBalanceEntries
+                    .stream()
+                    .map(userBalance -> UserBalanceEntryEntity.of(userBalance.getCustomerId(), userBalance.getBalanceEntries()))
+                    .collect(Collectors.toUnmodifiableList());
+
             final var userBalanceEntriesEntitySave = userBalanceEntryJpaRepository.saveAll(userBalanceEntriesEntity);
+
             return userBalanceEntriesEntitySave.stream().map(userBalanceEntryEntityToUserBalanceEntry::convert).collect(Collectors.toUnmodifiableList());
         } catch (final Exception e) {
             log.error("Error to save UserBalanceEntry List: {}", e.getMessage());
