@@ -5,6 +5,7 @@ import com.bank.balance.app.exceptions.TransactionIdFoundException;
 import com.bank.balance.app.exceptions.TransactionTypeInvalidException;
 import com.bank.balance.app.repositories.ICustomerBalanceRepository;
 import com.bank.balance.app.repositories.ITransactionRepository;
+import com.bank.balance.app.repositories.IUserBalanceEntryRepository;
 import com.bank.balance.app.usecases.IEnterBalanceEntries;
 import com.bank.balance.app.utils.RepeatTransactionsUtil;
 import com.bank.balance.domain.CustomerBalance;
@@ -26,10 +27,12 @@ public class EnterBalanceEntries implements IEnterBalanceEntries {
 
     private final ITransactionRepository transactionRepository;
     private final ICustomerBalanceRepository customerBalanceRepository;
+    private final IUserBalanceEntryRepository userBalanceEntryRepository;
 
-    public EnterBalanceEntries(final ITransactionRepository transactionRepository, final ICustomerBalanceRepository customerBalanceRepository) {
+    public EnterBalanceEntries(final ITransactionRepository transactionRepository, final ICustomerBalanceRepository customerBalanceRepository, final IUserBalanceEntryRepository userBalanceEntryRepository) {
         this.transactionRepository = transactionRepository;
         this.customerBalanceRepository = customerBalanceRepository;
+        this.userBalanceEntryRepository = userBalanceEntryRepository;
     }
 
     @Override
@@ -38,7 +41,8 @@ public class EnterBalanceEntries implements IEnterBalanceEntries {
         verifyRepeatTransactions(userBalanceEntries);
         verifyDatabaseTransactions(userBalanceEntries);
         updateUsersBalances(userBalanceEntries);
-        return userBalanceEntries;
+        final var userBalanceEntriesUpdate = userBalanceEntryRepository.save(userBalanceEntries.getUserBalanceEntries());
+        return UsersBalancesEntriesAdapter.from(userBalanceEntriesUpdate);
     }
 
     private void verifyTransactionsBalance(final UsersBalancesEntriesAdapter userBalanceEntries) {

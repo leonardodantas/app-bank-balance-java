@@ -20,7 +20,7 @@ public class UserBalanceEntryEntity {
     @Id
     private String customerId;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<BalanceEntryEntity> balanceEntries;
 
     public static UserBalanceEntryEntity from(final UserBalanceEntry userBalanceEntry) {

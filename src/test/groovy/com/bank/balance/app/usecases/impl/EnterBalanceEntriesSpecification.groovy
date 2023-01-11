@@ -17,7 +17,7 @@ class EnterBalanceEntriesSpecification extends Specification {
 
     def transactionRepository = Mock(ITransactionRepository)
     def customerBalanceRepository = Mock(ICustomerBalanceRepository)
-    def enterBalanceEntries = new EnterBalanceEntries(transactionRepository, customerBalanceRepository)
+    def enterBalanceEntries = new EnterBalanceEntries(transactionRepository, customerBalanceRepository, userBalanceEntryRepository)
 
     def getMockJson = new GetMockJson()
 

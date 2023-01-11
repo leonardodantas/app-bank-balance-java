@@ -10,6 +10,8 @@ services:
       POSTGRES_PASSWORD: "123456"
     ports:
       - "5432:5432"
+    volumes:
+      - /private/var/lib/postgresql:/var/lib/postgresql
   bank-balance-pgadmin:
     restart: always
     image: dpage/pgadmin4
@@ -49,7 +51,8 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=leonardo
       - MONGO_INITDB_ROOT_PASSWORD=123456
-
+    volumes:
+      - /private/var/lib/mongodb:/var/lib/mongodb
   redis:
     image: redis
     ports:

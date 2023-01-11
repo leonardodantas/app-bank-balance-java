@@ -30,8 +30,8 @@ public class BalanceEntryEntity {
     private TransactionTypeEntity transactionType;
 
     private BalanceEntryEntity(final BalanceEntry balanceEntry) {
-        this.transactionId = this.getTransactionId();
-        this.description = this.getDescription();
+        this.transactionId = balanceEntry.getTransactionId();
+        this.description = balanceEntry.getDescription();
         this.value = balanceEntry.getValue();
         this.date = balanceEntry.getDate();
         this.transactionType = TransactionTypeEntity.valueOf(balanceEntry.getTransactionType().name());
