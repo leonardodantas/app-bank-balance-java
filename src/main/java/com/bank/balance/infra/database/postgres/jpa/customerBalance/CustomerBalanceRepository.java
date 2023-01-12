@@ -6,6 +6,8 @@ import com.bank.balance.infra.database.postgres.converters.CustomerBalanceEntity
 import com.bank.balance.infra.database.postgres.entities.CustomerBalanceEntity;
 import com.bank.balance.infra.exceptions.SaveEntityException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -25,6 +27,7 @@ public class CustomerBalanceRepository implements ICustomerBalanceRepository {
     }
 
     @Override
+    @Cacheable("customerBalance")
     public Optional<CustomerBalance> findById(final String customerId) {
         return customerBalanceJpaRepository.findById(customerId)
                 .map(customerBalanceExist -> {
@@ -34,6 +37,7 @@ public class CustomerBalanceRepository implements ICustomerBalanceRepository {
     }
 
     @Override
+    @CacheEvict("customerBalance")
     public CustomerBalance save(final CustomerBalance customerBalance) {
         try {
             final var customerEntity = CustomerBalanceEntity.from(customerBalance);
