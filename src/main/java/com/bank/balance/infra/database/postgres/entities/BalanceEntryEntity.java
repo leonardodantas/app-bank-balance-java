@@ -25,7 +25,6 @@ public class BalanceEntryEntity {
     private LocalDateTime date;
     @Enumerated(EnumType.STRING)
     private TransactionTypeEntity transactionType;
-
     @JoinColumn(name = "customer_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private UserBalanceEntryEntity userBalanceEntry;
