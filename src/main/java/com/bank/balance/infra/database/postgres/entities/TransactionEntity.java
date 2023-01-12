@@ -18,7 +18,7 @@ public class TransactionEntity {
 
     @Id
     private String transactionId;
-    @Column
+    @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime date;
 
     private TransactionEntity(final Transaction transaction) {

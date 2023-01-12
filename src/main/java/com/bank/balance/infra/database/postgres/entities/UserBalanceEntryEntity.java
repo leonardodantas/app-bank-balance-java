@@ -23,13 +23,23 @@ public class UserBalanceEntryEntity {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "userBalanceEntry")
     private List<BalanceEntryEntity> balanceEntries;
 
+    private UserBalanceEntryEntity(final String customerId) {
+        this.customerId = customerId;
+    }
+
     public static UserBalanceEntryEntity of(final String customerId, final List<BalanceEntry> balanceEntries) {
 
         final var balanceEntriesEntity = balanceEntries
                 .stream()
-                .map(BalanceEntryEntity::from)
+                .map(balanceEntryEntity -> {
+                    return BalanceEntryEntity.from(customerId, balanceEntryEntity);
+                })
                 .collect(Collectors.toUnmodifiableList());
 
         return new UserBalanceEntryEntity(customerId, balanceEntriesEntity);
+    }
+
+    public static UserBalanceEntryEntity from(final String customerId) {
+        return new UserBalanceEntryEntity(customerId);
     }
 }

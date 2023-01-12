@@ -24,7 +24,7 @@ public class CustomerBalanceEntity {
     private String customerId;
     @Column
     private BigDecimal balance;
-    @Column
+    @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime lastUpdate;
 
     public static CustomerBalanceEntity from(final CustomerBalance customerBalance) {

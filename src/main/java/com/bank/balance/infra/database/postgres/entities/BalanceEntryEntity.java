@@ -21,24 +21,25 @@ public class BalanceEntryEntity {
     private String description;
     @Column
     private BigDecimal value;
-    @Column
+    @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime date;
-    @Column
+    @Enumerated(EnumType.STRING)
     private TransactionTypeEntity transactionType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private UserBalanceEntryEntity userBalanceEntry;
 
-    private BalanceEntryEntity(final BalanceEntry balanceEntry) {
+    private BalanceEntryEntity(final String customerId, final BalanceEntry balanceEntry) {
         this.transactionId = balanceEntry.getTransactionId();
         this.description = balanceEntry.getDescription();
         this.value = balanceEntry.getValue();
         this.date = balanceEntry.getDate();
         this.transactionType = TransactionTypeEntity.valueOf(balanceEntry.getTransactionType().name());
+        this.userBalanceEntry = UserBalanceEntryEntity.from(customerId);
     }
 
-    public static BalanceEntryEntity from(final BalanceEntry balanceEntry) {
-        return new BalanceEntryEntity(balanceEntry);
+    public static BalanceEntryEntity from(final String customerId, final BalanceEntry balanceEntry) {
+        return new BalanceEntryEntity(customerId, balanceEntry);
     }
 }
