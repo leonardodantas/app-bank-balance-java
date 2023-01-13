@@ -1,17 +1,19 @@
 package com.bank.balance.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class CustomerRelease {
 
-    private final String customerId;
-    private final LocalDate startDate;
-    private final LocalDate endDate;
+    private String customerId;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     public boolean isEndDateBeforeStartDate() {
         return endDate.isBefore(startDate);
