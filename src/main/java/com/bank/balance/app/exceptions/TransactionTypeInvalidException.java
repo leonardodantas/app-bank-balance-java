@@ -9,7 +9,7 @@ public class TransactionTypeInvalidException extends RuntimeException {
     private final List<String> invalidTransactions;
 
     public TransactionTypeInvalidException(final List<String> invalidTransactions) {
-        super(String.format("Invalid transactions %s", invalidTransactions));
+        super(String.format("Transações invalidas %s", invalidTransactions));
         this.invalidTransactions = invalidTransactions;
     }
 }

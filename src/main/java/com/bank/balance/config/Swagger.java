@@ -31,7 +31,7 @@ public class Swagger {
                 .build()
                 .tags(new Tag("Inserir novos balanços", "", 0),
                         new Tag("Busca o saldo do cliente", "", 1),
-                        new Tag("Busca os lançamentos dos clientes menores que 90 dias", "", 2))
+                        new Tag("Busca os lançamentos dos clientes feitos a 90 dias", "", 2))
                 .apiInfo(metaData());
     }
 

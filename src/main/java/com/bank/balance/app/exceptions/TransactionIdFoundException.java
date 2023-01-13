@@ -8,6 +8,6 @@ import java.util.List;
 public class TransactionIdFoundException extends RuntimeException {
 
     public TransactionIdFoundException(final List<String> transactionsId) {
-        super(String.format("Transactions repeated on file, %s", transactionsId));
+        super(String.format("Transações repetidas no arquivo, %s", transactionsId));
     }
 }
