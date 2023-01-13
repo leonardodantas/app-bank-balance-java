@@ -5,6 +5,7 @@ import com.bank.balance.app.exceptions.TransactionIdFoundException
 import com.bank.balance.app.exceptions.TransactionTypeInvalidException
 import com.bank.balance.app.repositories.ICustomerBalanceRepository
 import com.bank.balance.app.repositories.ITransactionRepository
+import com.bank.balance.app.repositories.IUserBalanceEntryRepository
 import com.bank.balance.domain.CustomerBalance
 import com.bank.balance.domain.Transaction
 import com.bank.balance.domain.UserBalanceEntry
@@ -17,6 +18,7 @@ class EnterBalanceEntrySpecification extends Specification {
 
     def transactionRepository = Mock(ITransactionRepository)
     def customerBalanceRepository = Mock(ICustomerBalanceRepository)
+    def userBalanceEntryRepository = Mock(IUserBalanceEntryRepository)
     def enterBalanceEntries = new EnterBalanceEntries(transactionRepository, customerBalanceRepository, userBalanceEntryRepository)
 
     def getMockJson = new GetMockJson()
