@@ -1,6 +1,7 @@
 package com.bank.balance.infra.http.controllers;
 
 import com.bank.balance.app.usecases.IFindCustomerReleases;
+import com.bank.balance.domain.CustomerRelease;
 import com.bank.balance.infra.http.jsons.responses.BalanceEntryResponse;
 import io.swagger.annotations.Api;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -30,7 +31,8 @@ public class FindCustomerReleasesController {
             @RequestParam(defaultValue = "0") final int page,
             @RequestParam(defaultValue = "20") final int size
     ) {
-        final var response = findCustomerReleases.execute(customerId, starDate, endDate, page, size);
+        final var customerRelease = new CustomerRelease(customerId, starDate, endDate);
+        final var response = findCustomerReleases.execute(customerRelease, page, size);
         return response.stream().map(BalanceEntryResponse::from).collect(Collectors.toUnmodifiableList());
     }
 }

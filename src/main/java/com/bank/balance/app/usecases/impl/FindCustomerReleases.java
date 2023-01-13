@@ -5,9 +5,9 @@ import com.bank.balance.app.exceptions.IncompatibleDatesException;
 import com.bank.balance.app.repositories.IBalanceEntryRepository;
 import com.bank.balance.app.usecases.IFindCustomerReleases;
 import com.bank.balance.domain.BalanceEntry;
+import com.bank.balance.domain.CustomerRelease;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -20,25 +20,17 @@ public class FindCustomerReleases implements IFindCustomerReleases {
     }
 
     @Override
-    public List<BalanceEntry> execute(final String customerId, final LocalDate startDate, final LocalDate endDate, final int page, final int size) {
-        validateDate(startDate, endDate);
-
-        return balanceEntryRepository.findBy(
-                customerId,
-                startDate,
-                endDate,
-                page,
-                size
-        );
+    public List<BalanceEntry> execute(final CustomerRelease customerRelease, final int page, final int size) {
+        validateDate(customerRelease);
+        return balanceEntryRepository.findBy(customerRelease, page, size);
     }
 
-    private void validateDate(final LocalDate startDate, final LocalDate endDate) {
-        if (endDate.isBefore(startDate)) {
-            throw new IncompatibleDatesException(startDate, endDate);
+    private void validateDate(final CustomerRelease customerRelease) {
+        if (customerRelease.isEndDateBeforeStartDate()) {
+            throw new IncompatibleDatesException(customerRelease.getStartDate(), customerRelease.getEndDate());
         }
-        final var minDate = LocalDate.now().minusDays(90);
 
-        if (startDate.isBefore(minDate)) {
+        if (customerRelease.isStartDateBeforeMinDate()) {
             throw new DaysSearchException();
         }
     }
