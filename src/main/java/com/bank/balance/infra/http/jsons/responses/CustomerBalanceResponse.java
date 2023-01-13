@@ -12,11 +12,13 @@ public class CustomerBalanceResponse {
     private final String customerId;
     private final BigDecimal balance;
     private final LocalDateTime lastUpdate;
+    private final LocalDateTime date;
 
     private CustomerBalanceResponse(final CustomerBalance customerBalance) {
         this.customerId = customerBalance.getCustomerId();
         this.balance = customerBalance.getBalance();
         this.lastUpdate = customerBalance.getLastUpdate();
+        this.date = LocalDateTime.now();
     }
 
     public static CustomerBalanceResponse from(final CustomerBalance customerBalance) {

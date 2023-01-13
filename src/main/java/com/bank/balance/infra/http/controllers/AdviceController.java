@@ -1,5 +1,6 @@
 package com.bank.balance.infra.http.controllers;
 
+import com.bank.balance.app.exceptions.CustomerIdNotFoundException;
 import com.bank.balance.app.exceptions.ExistingTransactionsException;
 import com.bank.balance.app.exceptions.TransactionIdFoundException;
 import com.bank.balance.app.exceptions.TransactionTypeInvalidException;
@@ -47,6 +48,12 @@ public class AdviceController {
 
     @ExceptionHandler(SaveEntityException.class)
     public ResponseEntity<ErrorResponse> handlerSaveEntityException(final SaveEntityException exception) {
+        final var response = ErrorResponse.from(exception.getMessage());
+        return ResponseEntity.unprocessableEntity().body(response);
+    }
+
+    @ExceptionHandler(CustomerIdNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handlerCustomerIdNotFoundException(final CustomerIdNotFoundException exception) {
         final var response = ErrorResponse.from(exception.getMessage());
         return ResponseEntity.unprocessableEntity().body(response);
     }

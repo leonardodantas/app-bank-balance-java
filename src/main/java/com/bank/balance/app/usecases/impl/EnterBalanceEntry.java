@@ -41,9 +41,6 @@ public class EnterBalanceEntry implements IEnterBalanceEntry {
     private void updateUserBalance(final UserBalanceEntry userBalanceEntry) {
         final var balance = userBalanceEntry.getBalance();
 
-        /**
-         * Validar para tirar o cache nesse ponto
-         */
         customerBalanceRepository.findById(userBalanceEntry.getCustomerId())
                 .ifPresentOrElse((customerBalance) -> {
                     final var existingBalance = customerBalance.getBalance();

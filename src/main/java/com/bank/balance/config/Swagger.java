@@ -29,7 +29,9 @@ public class Swagger {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.bank.balance.infra.http.controllers"))
                 .build()
-                .tags(new Tag("Enter Balance Entries", "Entries of new values through file", 0))
+                .tags(new Tag("Inserir novos balanços", "", 0),
+                        new Tag("Busca o saldo do cliente", "", 1),
+                        new Tag("Busca os lançamentos dos clientes menores que 90 dias", "", 2))
                 .apiInfo(metaData());
     }
 

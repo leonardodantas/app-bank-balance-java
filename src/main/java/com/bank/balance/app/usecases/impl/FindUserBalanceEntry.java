@@ -1,5 +1,6 @@
 package com.bank.balance.app.usecases.impl;
 
+import com.bank.balance.app.exceptions.CustomerIdNotFoundException;
 import com.bank.balance.app.repositories.ICustomerBalanceRepository;
 import com.bank.balance.app.usecases.IFindUserBalanceEntry;
 import com.bank.balance.domain.CustomerBalance;
@@ -17,6 +18,6 @@ public class FindUserBalanceEntry implements IFindUserBalanceEntry {
     @Override
     public CustomerBalance execute(final String customerId) {
         return customerBalanceRepository.findById(customerId)
-                .orElseThrow();
+                .orElseThrow(() -> new CustomerIdNotFoundException(customerId));
     }
 }
