@@ -4,7 +4,7 @@ import com.bank.balance.domain.Transaction;
 
 import java.util.List;
 
-public interface ITransactionRepository {
+public interface ITransactionEntityRepository {
 
     List<Transaction> findByTransactionsId(final List<String> transactionsId);
 

@@ -5,7 +5,7 @@ import com.bank.balance.domain.CustomerRelease;
 
 import java.util.List;
 
-public interface IBalanceEntryRepository {
+public interface IBalanceEntryEntityRepository {
 
     List<BalanceEntry> findBy(final CustomerRelease customerRelease, final int page, final int size);
 

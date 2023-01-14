@@ -3,9 +3,9 @@ package com.bank.balance.app.usecases.impl
 import com.bank.balance.app.exceptions.ExistingTransactionsException
 import com.bank.balance.app.exceptions.TransactionIdFoundException
 import com.bank.balance.app.exceptions.TransactionTypeInvalidException
-import com.bank.balance.app.repositories.ICustomerBalanceRepository
-import com.bank.balance.app.repositories.ITransactionRepository
-import com.bank.balance.app.repositories.IUserBalanceEntryRepository
+import com.bank.balance.app.repositories.ICustomerBalanceEntityRepository
+import com.bank.balance.app.repositories.ITransactionEntityRepository
+import com.bank.balance.app.repositories.IUserBalanceEntryEntityRepository
 import com.bank.balance.domain.CustomerBalance
 import com.bank.balance.domain.Transaction
 import com.bank.balance.domain.UserBalanceEntry
@@ -16,9 +16,9 @@ import spock.lang.Specification
 
 class EnterBalanceEntrySpecification extends Specification {
 
-    def transactionRepository = Mock(ITransactionRepository)
-    def customerBalanceRepository = Mock(ICustomerBalanceRepository)
-    def userBalanceEntryRepository = Mock(IUserBalanceEntryRepository)
+    def transactionRepository = Mock(ITransactionEntityRepository)
+    def customerBalanceRepository = Mock(ICustomerBalanceEntityRepository)
+    def userBalanceEntryRepository = Mock(IUserBalanceEntryEntityRepository)
     def enterBalanceEntries = new EnterBalanceEntries(transactionRepository, customerBalanceRepository, userBalanceEntryRepository)
 
     def getMockJson = new GetMockJson()

@@ -3,9 +3,9 @@ package com.bank.balance.app.usecases.impl;
 import com.bank.balance.app.exceptions.ExistingTransactionsException;
 import com.bank.balance.app.exceptions.TransactionIdFoundException;
 import com.bank.balance.app.exceptions.TransactionTypeInvalidException;
-import com.bank.balance.app.repositories.ICustomerBalanceRepository;
-import com.bank.balance.app.repositories.ITransactionRepository;
-import com.bank.balance.app.repositories.IUserBalanceEntryRepository;
+import com.bank.balance.app.repositories.ICustomerBalanceEntityRepository;
+import com.bank.balance.app.repositories.ITransactionEntityRepository;
+import com.bank.balance.app.repositories.IUserBalanceEntryEntityRepository;
 import com.bank.balance.app.usecases.IEnterBalanceEntries;
 import com.bank.balance.app.utils.RepeatTransactionsUtil;
 import com.bank.balance.domain.CustomerBalance;
@@ -25,11 +25,11 @@ import java.util.stream.Collectors;
 @Service
 public class EnterBalanceEntries implements IEnterBalanceEntries {
 
-    private final ITransactionRepository transactionRepository;
-    private final ICustomerBalanceRepository customerBalanceRepository;
-    private final IUserBalanceEntryRepository userBalanceEntryRepository;
+    private final ITransactionEntityRepository transactionRepository;
+    private final ICustomerBalanceEntityRepository customerBalanceRepository;
+    private final IUserBalanceEntryEntityRepository userBalanceEntryRepository;
 
-    public EnterBalanceEntries(final ITransactionRepository transactionRepository, final ICustomerBalanceRepository customerBalanceRepository, final IUserBalanceEntryRepository userBalanceEntryRepository) {
+    public EnterBalanceEntries(final ITransactionEntityRepository transactionRepository, final ICustomerBalanceEntityRepository customerBalanceRepository, final IUserBalanceEntryEntityRepository userBalanceEntryRepository) {
         this.transactionRepository = transactionRepository;
         this.customerBalanceRepository = customerBalanceRepository;
         this.userBalanceEntryRepository = userBalanceEntryRepository;

@@ -2,7 +2,7 @@ package com.bank.balance.app.usecases.impl
 
 import com.bank.balance.app.exceptions.DaysSearchException
 import com.bank.balance.app.exceptions.IncompatibleDatesException
-import com.bank.balance.app.repositories.IBalanceEntryRepository
+import com.bank.balance.app.repositories.IBalanceEntryEntityRepository
 import com.bank.balance.domain.BalanceEntry
 import com.bank.balance.domain.CustomerRelease
 import com.bank.balance.utils.GetMockJson
@@ -13,7 +13,7 @@ import java.time.LocalDate
 
 class FindCustomerReleasesSpecification extends Specification {
 
-    def balanceEntryRepository = Mock(IBalanceEntryRepository)
+    def balanceEntryRepository = Mock(IBalanceEntryEntityRepository)
     def findCustomerReleases = new FindCustomerReleases(balanceEntryRepository)
 
     def getMockJson = new GetMockJson()

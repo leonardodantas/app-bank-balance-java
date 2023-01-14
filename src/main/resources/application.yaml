@@ -10,12 +10,13 @@ spring:
       matching-strategy: ant_path_matcher
   data:
     mongodb:
-      authentication-database: admin
-      username: leonardo
-      password: 123456
-      database: bankBalance
-      port: 27017
-      host: 127.0.0.1
+#      authentication-database: admin
+#      username: leonardo
+#      password: 123456
+#      database: bankBalance
+#      port: 27017
+#      host: 127.0.0.1
+      uri: "mongodb://leonardo:123456@localhost:27017/bankBalance?authSource=admin"
   jpa:
     database: POSTGRESQL
     show-sql: true

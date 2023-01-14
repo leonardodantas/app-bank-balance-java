@@ -2,11 +2,10 @@ package com.bank.balance.app.repositories;
 
 import com.bank.balance.domain.CustomerBalance;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public interface ICustomerBalanceRepository {
+public interface ICustomerBalanceEntityRepository {
     Optional<CustomerBalance> findById(final String customerId);
 
     CustomerBalance save(final CustomerBalance customerBalance);

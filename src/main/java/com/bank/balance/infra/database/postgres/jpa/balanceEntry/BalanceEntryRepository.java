@@ -1,6 +1,6 @@
 package com.bank.balance.infra.database.postgres.jpa.balanceEntry;
 
-import com.bank.balance.app.repositories.IBalanceEntryRepository;
+import com.bank.balance.app.repositories.IBalanceEntryEntityRepository;
 import com.bank.balance.domain.BalanceEntry;
 import com.bank.balance.domain.CustomerRelease;
 import com.bank.balance.infra.database.postgres.converters.BalanceEntryEntityToBalanceEntry;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
-public class BalanceEntryRepository implements IBalanceEntryRepository {
+public class BalanceEntryRepository implements IBalanceEntryEntityRepository {
 
     private final BalanceEntryJpaRepository balanceEntryJpaRepository;
     private final BalanceEntryEntityToBalanceEntry balanceEntryEntityToBalanceEntry;

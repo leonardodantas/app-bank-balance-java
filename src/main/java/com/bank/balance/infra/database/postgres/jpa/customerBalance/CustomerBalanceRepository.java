@@ -1,6 +1,6 @@
 package com.bank.balance.infra.database.postgres.jpa.customerBalance;
 
-import com.bank.balance.app.repositories.ICustomerBalanceRepository;
+import com.bank.balance.app.repositories.ICustomerBalanceEntityRepository;
 import com.bank.balance.domain.CustomerBalance;
 import com.bank.balance.infra.database.postgres.converters.CustomerBalanceEntityToCustomerBalance;
 import com.bank.balance.infra.database.postgres.entities.CustomerBalanceEntity;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
-public class CustomerBalanceRepository implements ICustomerBalanceRepository {
+public class CustomerBalanceRepository implements ICustomerBalanceEntityRepository {
 
     private final CustomerBalanceJpaRepository customerBalanceJpaRepository;
     private final CustomerBalanceEntityToCustomerBalance customerBalanceEntityToCustomerBalance;

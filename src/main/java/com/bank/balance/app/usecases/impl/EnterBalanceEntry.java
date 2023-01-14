@@ -2,9 +2,9 @@ package com.bank.balance.app.usecases.impl;
 
 import com.bank.balance.app.exceptions.ExistingTransactionsException;
 import com.bank.balance.app.exceptions.TransactionIdFoundException;
-import com.bank.balance.app.repositories.ICustomerBalanceRepository;
-import com.bank.balance.app.repositories.ITransactionRepository;
-import com.bank.balance.app.repositories.IUserBalanceEntryRepository;
+import com.bank.balance.app.repositories.ICustomerBalanceEntityRepository;
+import com.bank.balance.app.repositories.ITransactionEntityRepository;
+import com.bank.balance.app.repositories.IUserBalanceEntryEntityRepository;
 import com.bank.balance.app.usecases.IEnterBalanceEntry;
 import com.bank.balance.app.utils.RepeatTransactionsUtil;
 import com.bank.balance.domain.CustomerBalance;
@@ -19,11 +19,11 @@ import java.util.stream.Collectors;
 @Service
 public class EnterBalanceEntry implements IEnterBalanceEntry {
 
-    private final ITransactionRepository transactionRepository;
-    private final IUserBalanceEntryRepository balanceEntryRepository;
-    private final ICustomerBalanceRepository customerBalanceRepository;
+    private final ITransactionEntityRepository transactionRepository;
+    private final IUserBalanceEntryEntityRepository balanceEntryRepository;
+    private final ICustomerBalanceEntityRepository customerBalanceRepository;
 
-    public EnterBalanceEntry(final ITransactionRepository transactionRepository, final IUserBalanceEntryRepository balanceEntryRepository, final ICustomerBalanceRepository customerBalanceRepository) {
+    public EnterBalanceEntry(final ITransactionEntityRepository transactionRepository, final IUserBalanceEntryEntityRepository balanceEntryRepository, final ICustomerBalanceEntityRepository customerBalanceRepository) {
         this.transactionRepository = transactionRepository;
         this.balanceEntryRepository = balanceEntryRepository;
         this.customerBalanceRepository = customerBalanceRepository;

@@ -1,6 +1,5 @@
 package com.bank.balance.infra.database.postgres.jpa.userBalanceEntry;
 
-import com.bank.balance.app.repositories.IUserBalanceEntryRepository;
 import com.bank.balance.infra.database.postgres.entities.UserBalanceEntryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 

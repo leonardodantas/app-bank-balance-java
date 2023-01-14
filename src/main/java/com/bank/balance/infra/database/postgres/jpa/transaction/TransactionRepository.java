@@ -1,6 +1,6 @@
 package com.bank.balance.infra.database.postgres.jpa.transaction;
 
-import com.bank.balance.app.repositories.ITransactionRepository;
+import com.bank.balance.app.repositories.ITransactionEntityRepository;
 import com.bank.balance.domain.Transaction;
 import com.bank.balance.infra.database.postgres.converters.TransactionEntityToTransaction;
 import com.bank.balance.infra.database.postgres.entities.TransactionEntity;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
-public class TransactionRepository implements ITransactionRepository {
+public class TransactionRepository implements ITransactionEntityRepository {
 
     private final TransactionJpaRepository transactionJpaRepository;
     private final TransactionEntityToTransaction transactionEntityToTransaction;
