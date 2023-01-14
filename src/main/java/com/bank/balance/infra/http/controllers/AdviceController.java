@@ -2,6 +2,7 @@ package com.bank.balance.infra.http.controllers;
 
 import com.bank.balance.app.exceptions.*;
 import com.bank.balance.infra.exceptions.ConvertFileException;
+import com.bank.balance.infra.exceptions.SaveDocumentException;
 import com.bank.balance.infra.exceptions.SaveEntityException;
 import com.bank.balance.infra.http.jsons.responses.ErrorResponse;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +46,12 @@ public class AdviceController {
 
     @ExceptionHandler(SaveEntityException.class)
     public ResponseEntity<ErrorResponse> handlerSaveEntityException(final SaveEntityException exception) {
+        final var response = ErrorResponse.from(exception.getMessage());
+        return ResponseEntity.unprocessableEntity().body(response);
+    }
+
+    @ExceptionHandler(SaveDocumentException.class)
+    public ResponseEntity<ErrorResponse> handlerSaveDocumentException(final SaveDocumentException exception) {
         final var response = ErrorResponse.from(exception.getMessage());
         return ResponseEntity.unprocessableEntity().body(response);
     }

@@ -44,15 +44,15 @@ services:
 #      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
 #      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 #
-#  mongodb:
-#    image: mongo:4.2.23
-#    ports:
-#      - 27017:27017
-#    environment:
-#      - MONGO_INITDB_ROOT_USERNAME=leonardo
-#      - MONGO_INITDB_ROOT_PASSWORD=123456
-#    volumes:
-#      - /private/var/lib/mongodb:/var/lib/mongodb
+  mongodb:
+    image: mongo:4.2.23
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=leonardo
+      - MONGO_INITDB_ROOT_PASSWORD=123456
+    volumes:
+      - /private/var/lib/mongodb:/var/lib/mongodb
   redis:
     image: redis
     ports:

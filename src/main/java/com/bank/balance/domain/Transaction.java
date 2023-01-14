@@ -23,4 +23,10 @@ public class Transaction implements Serializable {
     public static Transaction of(final String transactionId, final LocalDateTime date) {
         return new Transaction(transactionId, date);
     }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "transactionId='" + transactionId + '}';
+    }
 }

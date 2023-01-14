@@ -4,9 +4,12 @@ import com.bank.balance.app.repositories.IBalanceEntryRepository;
 import com.bank.balance.domain.BalanceEntry;
 import com.bank.balance.domain.CustomerRelease;
 import com.bank.balance.infra.database.postgres.converters.BalanceEntryEntityToBalanceEntry;
+import com.bank.balance.infra.database.postgres.entities.BalanceEntryEntity;
+import com.bank.balance.infra.exceptions.SaveEntityException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -33,5 +36,25 @@ public class BalanceEntryRepository implements IBalanceEntryRepository {
                 pageRequest
         );
         return balanceEntriesEntity.stream().map(balanceEntryEntityToBalanceEntry::convert).collect(Collectors.toUnmodifiableList());
+    }
+
+    @Override
+    public List<BalanceEntry> findAllForArchives() {
+        final var dateForArchive = LocalDateTime.of(LocalDate.now(), LocalTime.MIN).minusDays(90);
+        final var balanceEntries = balanceEntryJpaRepository.findAllByDateLessThanEqual(dateForArchive);
+        return balanceEntries.stream().map(balanceEntryEntityToBalanceEntry::convert).collect(Collectors.toUnmodifiableList());
+    }
+
+    @Override
+    public void deleteAll(final List<BalanceEntry> balanceEntries) {
+        try {
+            final var balanceEntriesEntity = balanceEntries
+                    .stream().map(BalanceEntryEntity::from)
+                    .collect(Collectors.toUnmodifiableList());
+
+            balanceEntryJpaRepository.deleteAll(balanceEntriesEntity);
+        } catch (final Exception exception) {
+            throw new SaveEntityException(exception.getMessage(), exception.getCause());
+        }
     }
 }

@@ -12,6 +12,6 @@ public class BalanceEntryEntityToBalanceEntry implements Converter<BalanceEntryE
     @Override
     public BalanceEntry convert(final BalanceEntryEntity entity) {
         return new BalanceEntry(entity.getTransactionId(), entity.getDescription(), entity.getValue(),
-                entity.getDate(), TransactionType.valueOf(entity.getTransactionType().name()));
+                entity.getDate(), TransactionType.valueOf(entity.getTransactionType().name()), entity.getCustomerId());
     }
 }

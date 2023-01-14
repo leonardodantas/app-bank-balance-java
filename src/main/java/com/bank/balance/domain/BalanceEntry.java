@@ -24,7 +24,7 @@ public class BalanceEntry {
     private LocalDateTime date;
     @NotNull
     private TransactionType transactionType;
-
+    private String customerId;
     public boolean isInvalidTransaction() {
         return transactionType.isInvalid(value);
     }

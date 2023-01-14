@@ -16,7 +16,6 @@ public class BalanceEntryEntity {
 
     @Id
     private String transactionId;
-
     @Column(length = 120)
     private String description;
     @Column
@@ -40,5 +39,13 @@ public class BalanceEntryEntity {
 
     public static BalanceEntryEntity from(final String customerId, final BalanceEntry balanceEntry) {
         return new BalanceEntryEntity(customerId, balanceEntry);
+    }
+
+    public static BalanceEntryEntity from(final BalanceEntry balanceEntry) {
+        return new BalanceEntryEntity(balanceEntry.getCustomerId(), balanceEntry);
+    }
+
+    public String getCustomerId() {
+        return this.userBalanceEntry.getCustomerId();
     }
 }

@@ -6,7 +6,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface BalanceEntryJpaRepository extends JpaRepository<BalanceEntryEntity, String> {
     Page<BalanceEntryEntity> findAllByUserBalanceEntryCustomerIdAndDateLessThanEqualAndDateGreaterThanEqual(final String customerId, final LocalDateTime endDate, final LocalDateTime startDate, final PageRequest pageRequest);
+
+    List<BalanceEntryEntity> findAllByDateLessThanEqual(final LocalDateTime date);
 }

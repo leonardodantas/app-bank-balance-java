@@ -8,4 +8,8 @@ import java.util.List;
 public interface IBalanceEntryRepository {
 
     List<BalanceEntry> findBy(final CustomerRelease customerRelease, final int page, final int size);
+
+    List<BalanceEntry> findAllForArchives();
+
+    void deleteAll(final List<BalanceEntry> balanceEntries);
 }
