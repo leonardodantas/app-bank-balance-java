@@ -32,6 +32,7 @@ public class Swagger {
                 .tags(new Tag("Inserir novos balanços", "", 0),
                         new Tag("Busca o saldo do cliente", "", 1),
                         new Tag("Busca os lançamentos dos clientes feitos a 90 dias", "", 2),
+                        new Tag("Busca os lançamentos dos clientes feitos a mais de 90 dias", "", 2),
                         new Tag("Salvar os lançamentos com mais de 90 dias no MongoDB manualmente", "", 3))
                 .apiInfo(metaData());
     }

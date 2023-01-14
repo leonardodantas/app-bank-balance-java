@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public class DaysSearchException extends RuntimeException {
 
-    public DaysSearchException() {
-        super(String.format("O periodo minimo para buscar deve ser igual a data de hoje menos 90 dias, ou seja %s", LocalDate.now().minusDays(90)));
+    public DaysSearchException(final String message) {
+        super(message);
     }
 }
