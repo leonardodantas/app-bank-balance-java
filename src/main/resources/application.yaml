@@ -16,6 +16,7 @@ spring:
 #      database: bankBalance
 #      port: 27017
 #      host: 127.0.0.1
+      auto-index-creation: true
       uri: "mongodb://leonardo:123456@localhost:27017/bankBalance?authSource=admin"
   jpa:
     database: POSTGRESQL

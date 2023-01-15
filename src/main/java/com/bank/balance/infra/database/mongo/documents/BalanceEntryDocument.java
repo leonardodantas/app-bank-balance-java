@@ -5,6 +5,7 @@ import com.bank.balance.infra.database.postgres.entities.TransactionTypeEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
@@ -14,8 +15,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Document("balanceEntry")
 public class BalanceEntryDocument {
-
     @Id
+    private String id;
+    @Indexed(name = "balanceEntryTTL", expireAfter = "1095d")
     private String transactionId;
     private String description;
     private BigDecimal value;

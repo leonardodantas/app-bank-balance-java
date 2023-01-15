@@ -68,4 +68,10 @@ public class AdviceController {
         return ResponseEntity.unprocessableEntity().body(response);
     }
 
+    @ExceptionHandler(IncompatibleDatesException.class)
+    public ResponseEntity<ErrorResponse> handlerIncompatibleDatesException(final IncompatibleDatesException exception) {
+        final var response = ErrorResponse.from(exception.getMessage());
+        return ResponseEntity.unprocessableEntity().body(response);
+    }
+
 }
