@@ -1,6 +1,6 @@
 package com.bank.balance.infra.http.controllers;
 
-import com.bank.balance.app.usecases.IFindCustomerReleasesHistory;
+import com.bank.balance.app.usecases.IFindCustomerReleases;
 import com.bank.balance.domain.CustomerRelease;
 import com.bank.balance.infra.http.jsons.responses.BalanceEntryResponse;
 import io.swagger.annotations.Api;
@@ -16,10 +16,10 @@ import java.util.stream.Collectors;
 @Api(tags = "Busca os lançamentos dos clientes feitos a 90 dias")
 public class FindCustomerReleasesController {
 
-    private final IFindCustomerReleasesHistory findCustomerReleasesHistory;
+    private final IFindCustomerReleases findCustomerReleases;
 
-    public FindCustomerReleasesController(final IFindCustomerReleasesHistory findCustomerReleasesHistory) {
-        this.findCustomerReleasesHistory = findCustomerReleasesHistory;
+    public FindCustomerReleasesController(final IFindCustomerReleases findCustomerReleases) {
+        this.findCustomerReleases = findCustomerReleases;
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -32,7 +32,7 @@ public class FindCustomerReleasesController {
             @RequestParam(defaultValue = "20") final int size
     ) {
         final var customerRelease = new CustomerRelease(customerId, starDate, endDate);
-        final var response = findCustomerReleasesHistory.execute(customerRelease, page, size);
+        final var response = findCustomerReleases.execute(customerRelease, page, size);
         return response.stream().map(BalanceEntryResponse::from).collect(Collectors.toUnmodifiableList());
     }
 }

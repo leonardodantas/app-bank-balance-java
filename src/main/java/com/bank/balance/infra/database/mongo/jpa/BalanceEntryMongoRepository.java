@@ -8,5 +8,5 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BalanceEntryMongoRepository extends MongoRepository<BalanceEntryDocument, String> {
-    List<BalanceEntryDocument> findAllByUserBalanceEntryCustomerIdAndDateLessThanEqualAndDateGreaterThanEqual(final String customerId, final LocalDateTime endDate, final LocalDateTime startDate, final PageRequest pageRequest);
+    List<BalanceEntryDocument> findAllByDateBetweenAndCustomerId(final LocalDateTime startDate, final LocalDateTime endDate, final String customerId, final PageRequest pageRequest);
 }

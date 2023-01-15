@@ -42,10 +42,10 @@ public class BalanceEntryDocumentRepository implements IBalanceEntryDocumentRepo
     @Override
     public List<BalanceEntry> findBy(final CustomerRelease customerRelease, final int page, final int size) {
         final var pageRequest = PageRequest.of(page, size);
-        final var balanceEntriesEntity = balanceEntryMongoRepository.findAllByUserBalanceEntryCustomerIdAndDateLessThanEqualAndDateGreaterThanEqual(
-                customerRelease.getCustomerId(),
-                LocalDateTime.of(customerRelease.getEndDate(), LocalTime.MAX),
+        final var balanceEntriesEntity = balanceEntryMongoRepository.findAllByDateBetweenAndCustomerId(
                 LocalDateTime.of(customerRelease.getStartDate(), LocalTime.MIN),
+                LocalDateTime.of(customerRelease.getEndDate(), LocalTime.MAX),
+                customerRelease.getCustomerId(),
                 pageRequest
         );
         return balanceEntriesEntity.stream().map(balanceEntryDocumentToBalanceEntry::convert).collect(Collectors.toUnmodifiableList());
